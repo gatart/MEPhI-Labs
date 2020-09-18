@@ -30,23 +30,25 @@ void generateMatrix(matrix &M){
     }
 }
 */
-void buildVector(matrix M, double *V){
-    int S, Max, Min;
+bool buildVector(matrix M, double *V){
+    int S, Max, Min, j;
     bool flag;
     point *tmp;
     for (int i = 0; i < M.lines; ++i){
         S = 0;
         Max = 0;
         Min = 0;
-        flag = true; //Check for first non-zero element
+        j = 0;
+        flag = true;
         tmp = M.mass[i].next;
-        while(tmp){ //Count max, min and sum
+        while(tmp){ //Count max, min and sum from non-zero elements
             S += tmp->info;
+            j++;
             if (flag){ //first non-zero element
                 Max = tmp->info;
                 Min = tmp->info;
                 tmp = tmp->next;
-                flag = false;// После добавления этой строки вылетает
+                flag = false;
                 continue;
             }
             if (Max < tmp->info)
@@ -55,17 +57,29 @@ void buildVector(matrix M, double *V){
                 Min = tmp->info;
             tmp = tmp->next;
         }
-        cout <<"S = " <<S << "Max = " <<Max <<"Min = " <<Min<<endl;
+        if (j < M.rows - 1){ //if Min or Max is zero
+            if (Max < 0)
+                Max = 0;
+            else if (Min > 0)
+                Min = 0;
+        }
         S -= Min;
         Max -= Min;
-        V[i] = static_cast<double>(S) / Max; //Can be zero devision
-        cout <<"Vector "<<i<<": "<< V[i]<<endl;
+        try {
+            if (Max == 0)
+                throw 2;
+            V[i] = static_cast<double>(S) / Max;
+        } catch (int i) {
+            cout <<"Error " <<i<<" Devision by zero!"<<endl;
+            return false;
+        }
     }
+    return true;
 }
 void viewAnswer(matrix M, double *V){
     int i, j;
     point *tmp;
-    cout <<"Matrix:";
+    cout <<endl<<"Matrix:";
     for (i = 0; i < M.lines; ++i){
         cout <<endl;
         j = 0;
@@ -82,11 +96,23 @@ void viewAnswer(matrix M, double *V){
         }
     }
 
-    cout <<endl << "Vector:" <<endl <<"{" << V[0];
+    cout <<endl << endl<< "Vector:" <<endl <<"{" << V[0];
     for (i = 1; i < M.lines; ++i)
         cout <<", " <<V[i];
-    cout <<"}" <<endl;
+    cout <<"}" <<endl<<endl;
 }
 void cleanData(matrix &M, double *V){
-    cout <<"clear";
+    point *tmp, *next;
+
+    delete V;
+    for (int i = 0; i < M.lines; ++i){
+        tmp = M.mass[i].next;
+        while(tmp){
+            next = tmp->next;
+            delete tmp;
+            tmp = next;
+        }
+    }
+    delete M.mass;
+    cout <<"Clearing complete!";
 }

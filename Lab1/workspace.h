@@ -2,6 +2,8 @@
 #define WORKSPACE_H
 
 #include <iostream>
+#include <stdlib.h> //For exiting
+
 using std::cin;
 using std::cout;
 using std::endl;
@@ -26,7 +28,7 @@ void getNum (T & a){
 
 void buildMatrix(matrix &M);
 void generateMatrix(matrix &M);
-void buildVector(matrix M, double *V);
+bool buildVector(matrix M, double *V);
 void viewAnswer(matrix M, double *V);
 void cleanData(matrix &M, double *V);
 

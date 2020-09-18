@@ -2,7 +2,7 @@
 
 int main() {
     matrix M;
-    //bool flag;
+    bool flag;
 
     cout <<"Enter matrix size"<<endl<<"Lines: ";
     do
@@ -24,8 +24,9 @@ int main() {
     buildMatrix(M);
 
     double *V = new double[M.lines];
-    buildVector(M, V);
-    viewAnswer(M, V);
+    flag = buildVector(M, V);
+    if (flag)
+        viewAnswer(M, V);
     cleanData(M,V);
     return 0;
 }
