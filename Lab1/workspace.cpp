@@ -6,57 +6,75 @@ void getSize(int &a, std::string L){
         getNum(a);
     }while (a <= 0);
 };
-
 bool buildMatrix(matrix &M){
-    point *tmp;
-    int num;
-    for (int i = 0; i < M.lines; ++i){
-        tmp = &M.mass[i];
+    int i = 0, j, num; //A[i][j]
+    line *tmp1 = nullptr;
+    point *tmp2 = nullptr;
+    bool zero, fline = true;
+    while (i < M.lines){
         cout << "Enter line " <<i + 1 <<":" <<endl;
-        for (int j = 0; j < M.rows; ++j){
-            getNum(num); //Can be bad alloc
+        zero = true;
+        j = 0;
+        while (j < M.rows){
+            getNum(num);
             if (num != 0){
-                try {
-                    tmp->next = new point;
-                } catch (std::bad_alloc& ba) {
-                    cout <<ba.what();
-                    return true;
+                if (zero){
+                    if (fline){ //first non-zero line
+                        M.mass = new line;
+                        tmp1 = M.mass;
+                        fline = false;
+                    }else{ //non-zero line
+                        tmp1->next = new line;
+                        tmp1 = tmp1->next;
+                    }
+                    zero = false;
+                    tmp1->key = i;
+                    tmp1->el = new point; //first element
+                    tmp2 = tmp1->el;
+                }else{ //new element
+                    tmp2->next = new point;
+                    tmp2 = tmp2->next;
                 }
-                tmp = tmp->next;
-                tmp->key = j;
-                tmp->info = num;
-                tmp->next = nullptr;
+                tmp2->key = j;
+                tmp2->info = num;
             }
+            ++j;
         }
+        ++i;
+    }
+    if (fline){
+        cout <<"Zero matrix!" <<endl;
+        return true;
     }
     return false;
 }
 bool buildVector(const matrix &M, double *V){
-    int S, Max, Min, j;
+    int S, Max, Min, i = 0, j;
+    line *tmp1 = M.mass;
+    point *tmp2;
     bool flag;
-    point *tmp;
-    for (int i = 0; i < M.lines; ++i){
+    while(tmp1){
+        tmp2 = tmp1->el;
         S = 0;
         Max = 0;
         Min = 0;
         j = 0;
         flag = true;
-        tmp = M.mass[i].next;
-        while(tmp){ //Count max, min and sum from non-zero elements
-            S += tmp->info;
+        while(tmp2){ //Count Sum, Max and Min in line
+            S += tmp2->info;
             j++;
             if (flag){ //first non-zero element
-                Max = tmp->info;
-                Min = tmp->info;
-                tmp = tmp->next;
+                Max = tmp2->info;
+                Min = tmp2->info;
+                tmp2 = tmp2->next;
                 flag = false;
                 continue;
             }
-            if (Max < tmp->info)
-                Max = tmp->info;
-            else if (Min > tmp->info)
-                Min = tmp->info;
-            tmp = tmp->next;
+            if (Max < tmp2->info)
+                Max = tmp2->info;
+            else if (Min > tmp2->info)
+                Min = tmp2->info;
+            tmp2 = tmp2->next;
         }
         if (j < M.rows - 1){ //if Min or Max is zero
             if (Max < 0)
@@ -68,12 +86,18 @@ bool buildVector(const matrix &M, double *V){
         Max -= Min;
         try {
             if (Max == 0)
-                throw 2;
+                throw "Division by zero!";
             V[i] = static_cast<double>(S) / Max;
-        } catch (int i) {
-            cout <<"Devision by zero!"<<endl;
+        } catch (std::string L) {
+            cout <<L<<endl;
             return false;
         }
+        tmp1 = tmp1->next;
+        ++i;
+    }
+    if (i < M.lines - 1){
+        cout <<"Division by zero!"<<endl;
+        return false;
     }
     return true;
 }
@@ -85,45 +109,59 @@ void viewVector(double *V, int Lines){
     cout <<"}" <<endl<<endl;
 }
 void viewMatrix(const matrix &M){
-    int j;
-    point *tmp;
-    cout <<endl<<"Matrix:";
-    for (int i = 0; i < M.lines; ++i){
-        cout <<endl;
-        j = 0;
-        tmp = M.mass[i].next;
-        while(j < M.rows){
-            if (tmp && tmp->key == j){ //non-zero element
-                cout << tmp->info <<"   ";
-                tmp = tmp->next;
+    int i = 0, j;
+    line *tmp1;
+    point *tmp2;
+    cout <<"Matrix:"<<endl;
+    tmp1 = M.mass;
+    while (i < M.lines){
+        if (tmp1 && tmp1->key == i){
+            j = 0;
+            tmp2 = tmp1->el;
+            while (j < M.rows){ //Line
+                if (tmp2 && tmp2->key == j){
+                    cout <<tmp2->info <<"   ";
+                    tmp2 = tmp2->next;
+                }else{
+                    cout <<"0   ";
+                }
                 j++;
-                continue;
             }
-            cout << "0   ";
-            j++;
+            tmp1 = tmp1->next;
+        }else{ //Zero line
+            for(j = 0; j < M.rows; ++j)
+                cout <<"0   ";
         }
+        i++;
+        cout <<endl;
     }
     cout <<endl;
 }
 
 void cleanMatrix(matrix &M){
-    point *tmp, *next;
-
-    for (int i = 0; i < M.lines; ++i){
-        tmp = M.mass[i].next;
-        while(tmp){
-            next = tmp->next;
-            delete tmp;
-            tmp = next;
+    line *tmp1, *next1;
+    point *tmp2, *next2;
+    tmp1 = M.mass;
+    while(tmp1){
+        tmp2 = tmp1->el;
+        while(tmp2){
+            next2 = tmp2->next;
+            delete tmp2;
+            tmp2 = next2;
         }
+        next1 = tmp1->next;
+        delete tmp1;
+        tmp1 = next1;
     }
-    delete M.mass;
     cout <<"Clearing complete!";
 }
 void cleanVector(double *V){
     delete V;
 }
 void cleanData(matrix &M, double *V){
-    cleanMatrix(M);
     cleanVector(V);
+    cleanMatrix(M);
 }
+
+
+//EXCEPTIONS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

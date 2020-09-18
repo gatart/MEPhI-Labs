@@ -13,8 +13,13 @@ typedef struct point{
     int info;
     int key;
 }point;
+typedef struct line{
+    int key;
+    point *el;
+    line *next = nullptr;
+}line;
 typedef struct matrix{
-    point *mass;
+    line *mass;
     int lines;
     int rows;
 }matrix;
