@@ -10,7 +10,7 @@ bool buildMatrix(matrix &M){
     int i = 0, j, num; //A[i][j]
     line *tmp1 = nullptr;
     point *tmp2 = nullptr;
-    bool zero, fline = true;
+    bool zero, fline = true, flag = true;
     while (i < M.lines){
         cout << "Enter line " <<i + 1 <<":" <<endl;
         zero = true;
@@ -20,19 +20,31 @@ bool buildMatrix(matrix &M){
             if (num != 0){
                 if (zero){
                     if (fline){ //first non-zero line
-                        M.mass = new line;
+                        M.mass = loccMem<line>(flag);
+                        if (flag){
+                            return true;
+                        }
                         tmp1 = M.mass;
                         fline = false;
                     }else{ //non-zero line
-                        tmp1->next = new line;
+                        tmp1->next = loccMem<line>(flag);
+                        if (flag){
+                            return true;
+                        }
                         tmp1 = tmp1->next;
                     }
                     zero = false;
                     tmp1->key = i;
-                    tmp1->el = new point; //first element
+                    tmp1->el = loccMem<point>(flag); //first element
+                    if (flag){
+                        return true;
+                    }
                     tmp2 = tmp1->el;
                 }else{ //new element
-                    tmp2->next = new point;
+                    tmp2->next = loccMem<point>(flag);
+                    if (flag){
+                        return true;
+                    }
                     tmp2 = tmp2->next;
                 }
                 tmp2->key = j;
@@ -162,6 +174,3 @@ void cleanData(matrix &M, double *V){
     cleanVector(V);
     cleanMatrix(M);
 }
-
-
-//EXCEPTIONS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

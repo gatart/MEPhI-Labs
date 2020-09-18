@@ -11,20 +11,16 @@ int main() {
         cleanMatrix(M);
         return 0;
     }
-    //-----------------
     double *V;
-    try { //bad alloc Vector
-        V = new double[M.lines];
-    } catch (std::bad_alloc& ba) {
-        cout <<ba.what();
+    V = loccMem<double>(flag);
+    if (flag){
+        cleanMatrix(M);
         return 0;
     }
-    //--------------------------
     viewMatrix(M);
     flag = buildVector(M, V);
     if (flag)
         viewVector(V, M.lines);
     cleanData(M, V);
-
     return 0;
 }

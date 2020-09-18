@@ -31,6 +31,19 @@ void getNum (T & a){
     while (!cin.good());
 }
 void getSize(matrix &M, std::string L);
+template <class T>
+T* loccMem(bool &flag){
+    T* tmp;
+    try {
+        tmp = new T;
+    } catch (std::bad_alloc& ba) {
+        cout <<ba.what()<<endl;
+        flag = true;
+        return nullptr;
+    }
+    flag = false;
+    return tmp;
+}
 
 bool buildMatrix(matrix &M);
 bool buildVector(const matrix &M, double *V);
