@@ -3,7 +3,6 @@
 int main() {
     matrix M;
     bool flag;
-
     cout <<"Enter matrix size"<<endl<<"Lines: ";
     do
         getNum(M.lines);
@@ -12,21 +11,29 @@ int main() {
     do
         getNum(M.rows);
     while (M.rows <= 0);
-    M.mass = new point[M.lines]; //Can be bad alloc
 
-    /*
-    cout <<"Do you want to generate random matrix or enter it by yorself? (0 - no, 1 - yes)"<< endl;
-    getNum(flag);
-    if (flag)
-        generateMatrix(M);
-    else
-    */
-    buildMatrix(M);
-
-    double *V = new double[M.lines];
+    try { //bad alloc Matrix 1
+        M.mass = new point[M.lines];
+    } catch (std::bad_alloc& ba) {
+        cout <<ba.what();
+        return 0;
+    }
+    flag = buildMatrix(M);
+    if (flag){ //bad alloc Matrix 2
+        cleanData(M);
+        return 0;
+    }
+    double *V;
+    try { //bad alloc Vector
+        V = new double[M.lines];
+    } catch (std::bad_alloc& ba) {
+        cout <<ba.what();
+        return 0;
+    }
     flag = buildVector(M, V);
     if (flag)
         viewAnswer(M, V);
-    cleanData(M,V);
+    cleanData(M);
+    delete V;
     return 0;
 }

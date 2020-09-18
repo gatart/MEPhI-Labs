@@ -26,11 +26,10 @@ void getNum (T & a){
     while (!cin.good());
 }
 
-void buildMatrix(matrix &M);
-void generateMatrix(matrix &M);
+bool buildMatrix(matrix &M);
 bool buildVector(matrix M, double *V);
 void viewAnswer(matrix M, double *V);
-void cleanData(matrix &M, double *V);
+void cleanData(matrix &M);
 
 
 #endif // WORKSPACE_H

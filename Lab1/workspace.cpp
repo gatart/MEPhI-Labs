@@ -1,6 +1,6 @@
 #include "workspace.h"
 
-void buildMatrix(matrix &M){
+bool buildMatrix(matrix &M){
     point *tmp;
     int num;
     for (int i = 0; i < M.lines; ++i){
@@ -9,7 +9,12 @@ void buildMatrix(matrix &M){
         for (int j = 0; j < M.rows; ++j){
             getNum(num); //Can be bad alloc
             if (num != 0){
-                tmp->next = new point; //Can be bad alloc
+                try {
+                    tmp->next = new point;
+                } catch (std::bad_alloc& ba) {
+                    cout <<ba.what();
+                    return true;
+                }
                 tmp = tmp->next;
                 tmp->key = j;
                 tmp->info = num;
@@ -17,6 +22,7 @@ void buildMatrix(matrix &M){
             }
         }
     }
+    return false;
 }
 /*
 void generateMatrix(matrix &M){
@@ -70,7 +76,7 @@ bool buildVector(matrix M, double *V){
                 throw 2;
             V[i] = static_cast<double>(S) / Max;
         } catch (int i) {
-            cout <<"Error " <<i<<" Devision by zero!"<<endl;
+            cout <<"Devision by zero!"<<endl;
             return false;
         }
     }
@@ -101,10 +107,9 @@ void viewAnswer(matrix M, double *V){
         cout <<", " <<V[i];
     cout <<"}" <<endl<<endl;
 }
-void cleanData(matrix &M, double *V){
+void cleanData(matrix &M){
     point *tmp, *next;
 
-    delete V;
     for (int i = 0; i < M.lines; ++i){
         tmp = M.mass[i].next;
         while(tmp){
