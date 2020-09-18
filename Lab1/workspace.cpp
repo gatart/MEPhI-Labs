@@ -1,5 +1,12 @@
 #include "workspace.h"
 
+void getSize(int &a, std::string L){
+    do{
+        cout <<L <<" ";
+        getNum(a);
+    }while (a <= 0);
+};
+
 bool buildMatrix(matrix &M){
     point *tmp;
     int num;
@@ -24,19 +31,7 @@ bool buildMatrix(matrix &M){
     }
     return false;
 }
-/*
-void generateMatrix(matrix &M){
-    point *tmp;
-    int num;
-    for (int i = 0; i < M.lines; ++i){
-        tmp = &M.mass[i];
-        for (int j = 0; j < M.rows; ++j) {
-
-        }
-    }
-}
-*/
-bool buildVector(matrix M, double *V){
+bool buildVector(const matrix &M, double *V){
     int S, Max, Min, j;
     bool flag;
     point *tmp;
@@ -82,11 +77,18 @@ bool buildVector(matrix M, double *V){
     }
     return true;
 }
-void viewAnswer(matrix M, double *V){
-    int i, j;
+
+void viewVector(double *V, int Lines){
+    cout <<endl <<"Vector:" <<endl <<"{" << V[0];
+    for (int i = 1; i < Lines; ++i)
+        cout <<", " <<V[i];
+    cout <<"}" <<endl<<endl;
+}
+void viewMatrix(const matrix &M){
+    int j;
     point *tmp;
     cout <<endl<<"Matrix:";
-    for (i = 0; i < M.lines; ++i){
+    for (int i = 0; i < M.lines; ++i){
         cout <<endl;
         j = 0;
         tmp = M.mass[i].next;
@@ -101,13 +103,10 @@ void viewAnswer(matrix M, double *V){
             j++;
         }
     }
-
-    cout <<endl << endl<< "Vector:" <<endl <<"{" << V[0];
-    for (i = 1; i < M.lines; ++i)
-        cout <<", " <<V[i];
-    cout <<"}" <<endl<<endl;
+    cout <<endl;
 }
-void cleanData(matrix &M){
+
+void cleanMatrix(matrix &M){
     point *tmp, *next;
 
     for (int i = 0; i < M.lines; ++i){
@@ -120,4 +119,11 @@ void cleanData(matrix &M){
     }
     delete M.mass;
     cout <<"Clearing complete!";
+}
+void cleanVector(double *V){
+    delete V;
+}
+void cleanData(matrix &M, double *V){
+    cleanMatrix(M);
+    cleanVector(V);
 }

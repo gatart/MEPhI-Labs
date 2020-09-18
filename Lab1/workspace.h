@@ -25,11 +25,16 @@ void getNum (T & a){
         cin>>a; //can be bad alloc
     while (!cin.good());
 }
+void getSize(matrix &M, std::string L);
 
 bool buildMatrix(matrix &M);
-bool buildVector(matrix M, double *V);
-void viewAnswer(matrix M, double *V);
-void cleanData(matrix &M);
+bool buildVector(const matrix &M, double *V);
 
+void viewMatrix(const matrix &M);
+void viewVector(double *V, int Lines);
+
+void cleanMatrix(matrix &M);
+void cleanData(matrix &M, double *V);
+void cleanVector(double *V);
 
 #endif // WORKSPACE_H

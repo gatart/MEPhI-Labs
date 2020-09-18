@@ -3,14 +3,9 @@
 int main() {
     matrix M;
     bool flag;
-    cout <<"Enter matrix size"<<endl<<"Lines: ";
-    do
-        getNum(M.lines);
-    while (M.lines <= 0);
-    cout <<"Rows: ";
-    do
-        getNum(M.rows);
-    while (M.rows <= 0);
+    cout <<"Enter matrix size"<<endl;
+    getSize(M.lines, "Lines: ");
+    getSize(M.rows, "Rows: ");
 
     try { //bad alloc Matrix 1
         M.mass = new point[M.lines];
@@ -20,7 +15,7 @@ int main() {
     }
     flag = buildMatrix(M);
     if (flag){ //bad alloc Matrix 2
-        cleanData(M);
+        cleanMatrix(M);
         return 0;
     }
     double *V;
@@ -30,10 +25,10 @@ int main() {
         cout <<ba.what();
         return 0;
     }
+    viewMatrix(M);
     flag = buildVector(M, V);
     if (flag)
-        viewAnswer(M, V);
-    cleanData(M);
-    delete V;
+        viewVector(V, M.lines);
+    cleanData(M, V);
     return 0;
 }
