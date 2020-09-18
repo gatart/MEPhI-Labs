@@ -7,8 +7,8 @@ using std::cout;
 using std::endl;
 
 typedef struct point{
-    point *next;
-    float info;
+    point *next = nullptr;
+    int info;
     int key;
 }point;
 typedef struct matrix{
@@ -20,14 +20,15 @@ typedef struct matrix{
 template <class T>
 void getNum (T & a){
     do
-        cin>>a;
+        cin>>a; //can be bad alloc
     while (!cin.good());
-};
+}
 
-void buildMatrix(matrix M);
-void generateMatrix(matrix M);
-void buildVector(matrix M);
-void viewAnswer();
+void buildMatrix(matrix &M);
+void generateMatrix(matrix &M);
+void buildVector(matrix M, double *V);
+void viewAnswer(matrix M, double *V);
+void cleanData(matrix &M, double *V);
 
 
 #endif // WORKSPACE_H

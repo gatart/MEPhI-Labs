@@ -1,21 +1,31 @@
-#include "workspace.h"
+#include "workspace.cpp"
 
 int main() {
     matrix M;
-    bool flag;
+    //bool flag;
 
     cout <<"Enter matrix size"<<endl<<"Lines: ";
-    getNum(M.lines);
+    do
+        getNum(M.lines);
+    while (M.lines <= 0);
     cout <<"Rows: ";
-    getNum(M.rows);
+    do
+        getNum(M.rows);
+    while (M.rows <= 0);
+    M.mass = new point[M.lines]; //Can be bad alloc
+
+    /*
     cout <<"Do you want to generate random matrix or enter it by yorself? (0 - no, 1 - yes)"<< endl;
     getNum(flag);
     if (flag)
         generateMatrix(M);
     else
-        buildMatrix(M);
+    */
+    buildMatrix(M);
 
-    buildVector(M);
-    viewAnswer();
+    double *V = new double[M.lines];
+    buildVector(M, V);
+    viewAnswer(M, V);
+    cleanData(M,V);
     return 0;
 }
