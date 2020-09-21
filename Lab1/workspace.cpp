@@ -20,14 +20,14 @@ bool buildMatrix(matrix &M){
             if (num != 0){
                 if (zero){
                     if (fline){ //first non-zero line
-                        M.mass = loccMem<line>(flag);
+                        M.mass = loccMem<line>(flag, 1);
                         if (flag){
                             return true;
                         }
                         tmp1 = M.mass;
                         fline = false;
                     }else{ //non-zero line
-                        tmp1->next = loccMem<line>(flag);
+                        tmp1->next = loccMem<line>(flag, 1);
                         if (flag){
                             return true;
                         }
@@ -35,13 +35,13 @@ bool buildMatrix(matrix &M){
                     }
                     zero = false;
                     tmp1->key = i;
-                    tmp1->el = loccMem<point>(flag); //first element
+                    tmp1->el = loccMem<point>(flag, 1); //first element
                     if (flag){
                         return true;
                     }
                     tmp2 = tmp1->el;
                 }else{ //new element
-                    tmp2->next = loccMem<point>(flag);
+                    tmp2->next = loccMem<point>(flag, 1);
                     if (flag){
                         return true;
                     }

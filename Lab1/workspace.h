@@ -32,10 +32,10 @@ void getNum (T & a){
 }
 void getSize(matrix &M, std::string L);
 template <class T>
-T* loccMem(bool &flag){
+T* loccMem(bool &flag, int num){
     T* tmp;
     try {
-        tmp = new T;
+        tmp = new T[num];
     } catch (std::bad_alloc& ba) {
         cout <<ba.what()<<endl;
         flag = true;

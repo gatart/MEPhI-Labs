@@ -12,7 +12,7 @@ int main() {
         return 0;
     }
     double *V;
-    V = loccMem<double>(flag);
+    V = loccMem<double>(flag, M.lines);
     if (flag){
         cleanMatrix(M);
         return 0;
