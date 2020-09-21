@@ -168,7 +168,7 @@ void cleanMatrix(matrix &M){
     cout <<"Clearing complete!";
 }
 void cleanVector(double *V){
-    delete V;
+    delete [] V;
 }
 void cleanData(matrix &M, double *V){
     cleanVector(V);
