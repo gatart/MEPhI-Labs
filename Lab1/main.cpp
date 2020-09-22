@@ -19,7 +19,6 @@ int main() {
         return 0;
     }
     viewMatrix(M);
-    //========================================================
     try {
         buildVector(M, V);
         viewVector(V, M.lines);

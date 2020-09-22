@@ -33,7 +33,6 @@ T* loccMem(int num){ //Just for adding 1 class to project!!! I know that can use
     tmp = new T[num];
     return tmp;
 }
-
 template<class T>
 T *giveSmth(T & head, const int &i){ //gives line or point
     T *last = nullptr, *tmp = &head;
@@ -57,8 +56,10 @@ T *giveSmth(T & head, const int &i){ //gives line or point
     tmp->key = i;
     return tmp;
 };
+
 void buildMatrix(matrix &M);
 void buildVector(const matrix &M, double *V);
+void testMatrix(const matrix M);
 
 void viewMatrix(const matrix &M);
 void viewVector(double *V, int Lines);
