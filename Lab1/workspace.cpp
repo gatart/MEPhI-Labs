@@ -8,114 +8,45 @@ void getNum(int &a, std::string L, int min, int max){
     }while (a < min || a > max); //If less then INT_MIN - exception, with INT_MAX - same
 };
 void getPoint(int &i, int &j, int &num, const matrix &M){
-    getNum(i, "First index: ", 0, M.lines);
-    getNum(j, "Second index: ", 0, M.rows);
+    getNum(i, "First index: ", 1, M.lines);
+    getNum(j, "Second index: ", 1, M.rows);
     getNum(num, "Value: ", INT_MIN, INT_MAX);
+    i--;
+    j--;
 }
-
-line* giveLine(line *tmp, const int &i){
-    line *last = nullptr;
-    while(tmp){
-        if (tmp->key == i){ //Find
-            return tmp;
-        }
-        if (tmp->key > i){ //Place between
-            last->next = nullptr;
-            last->next = loccMem<line>(1);
-            last = last->next;
-            last->next = tmp;
-            last->key = i;
-            return last;
-        }
-        last = tmp;
-        tmp = tmp->next;
+bool testMatrix(const matrix &M){
+    if (M.mass){
+        return false;
     }
-    last->next = loccMem<line>(1); //place in the end
-    tmp = last->next;
-    tmp->key = i;
-    return tmp;
-};
-void findPoint();
+    cout <<endl<<"Zero matrix!"<<endl;
+    return true;
+}
 
 void buildMatrix(matrix &M){
     int i, j, num; //A[i][j] = num
-    line head = {-1, nullptr, nullptr}, *tmp1 = nullptr;
-    point *tmp2 = nullptr;
+    line head1 = {-1, nullptr, nullptr}, *tmp1 = nullptr;
+    point head2{nullptr, 0, -1}, *tmp2 = nullptr;
 
-    tmp1 = &head;
-    cout <<"Enter Matrix (enter 0 to end): "<<endl;
+    cout <<"Enter Matrix" <<endl <<"You can rewrite points!" <<endl
+        <<"*** Enter 0 in Value to end. ***"<<endl;
     getPoint(i, j, num, M);
     while (num != 0){
-        //--------------
-        tmp1 = giveLine(tmp1, i);
-        tmp2 = tmp1->el;
-        //tmp2 = giveLine(tmp2, j);
-
-        //--------------
+        tmp1 = giveSmth<line>(head1, i);
+        head2.next = tmp1->el;
+        tmp2 = giveSmth<point>(head2, j);
+        tmp2->info = num;
+        tmp1->el = head2.next;
         getPoint(i, j, num, M);
     }
-    M.mass = head.next;
+    M.mass = head1.next;
 }
-/*
-bool buildMatrix(matrix &M){
-    int i = 0, j, num; //A[i][j]
-    line *tmp1 = nullptr;
-    point *tmp2 = nullptr;
-    bool zero, fline = true, flag = true;
-    while (i < M.lines){
-        cout << "Enter line " <<i + 1 <<":" <<endl;
-        zero = true;
-        j = 0;
-        while (j < M.rows){
-            getNum(num);
-            if (num != 0){
-                if (zero){
-                    if (fline){ //first non-zero line
-                        M.mass = loccMem<line>(flag, 1);
-                        if (flag){
-                            return true;
-                        }
-                        tmp1 = M.mass;
-                        fline = false;
-                    }else{ //non-zero line
-                        tmp1->next = loccMem<line>(flag, 1);
-                        if (flag){
-                            return true;
-                        }
-                        tmp1 = tmp1->next;
-                    }
-                    zero = false;
-                    tmp1->key = i;
-                    tmp1->el = loccMem<point>(flag, 1); //first element
-                    if (flag){
-                        return true;
-                    }
-                    tmp2 = tmp1->el;
-                }else{ //new element
-                    tmp2->next = loccMem<point>(flag, 1);
-                    if (flag){
-                        return true;
-                    }
-                    tmp2 = tmp2->next;
-                }
-                tmp2->key = j;
-                tmp2->info = num;
-            }
-            ++j;
-        }
-        ++i;
-    }
-    if (fline){
-        cout <<"Zero matrix!" <<endl;
-        return true;
-    }
-    return false;
-}
-*/
-bool buildVector(const matrix &M, double *V){
+void buildVector(const matrix &M, double *V){
     int S, Max, Min, i = 0, j;
     line *tmp1 = M.mass;
     point *tmp2;
+    if(testMatrix(M)){ //Zero matrix
+        return;
+    }
     while(tmp1){
         tmp2 = tmp1->el;
         S = 0;
@@ -139,22 +70,15 @@ bool buildVector(const matrix &M, double *V){
         }
         S -= Min;
         Max -= Min;
-        try {
-            if (Max == 0)
-                throw "Division by zero!";
-            V[i] = static_cast<double>(S) / Max;
-        } catch (std::string L) {
-            cout <<L<<endl;
-            return false;
-        }
+        if (Max == 0)
+            throw "Division by zero!";
+        V[i] = static_cast<double>(S) / Max;
         tmp1 = tmp1->next;
         ++i;
     }
     if (i < M.lines - 1){
-        cout <<"Division by zero!"<<endl;
-        return false;
+        throw "Division by zero!";
     }
-    return true;
 }
 
 void viewVector(double *V, int Lines){

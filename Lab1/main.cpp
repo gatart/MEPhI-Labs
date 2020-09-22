@@ -3,7 +3,7 @@
 int main() {
     matrix M;
     double *V = nullptr;
-    bool flag;
+    //bool flag;
     cout <<"Enter matrix size"<<endl;
     try {
         getNum(M.lines, "Lines: ", -1, INT_MAX);
@@ -11,18 +11,21 @@ int main() {
         buildMatrix(M);
         V = loccMem<double>(M.lines);
     } catch (istream::failure e) { //Stream failure
-        cout <<e.what();
+        cout <<e.what()<<endl<<"Incorrect input value!";
         return 0;
     } catch(std::bad_alloc& ba){ //Bad alloc
-        cout <<ba.what();
+        cout <<ba.what()<<endl<<"Bad allocation of matrix!";
         cleanMatrix(M);
         return 0;
     }
-    //========================================================
     viewMatrix(M);
-    flag = buildVector(M, V);
-    if (flag)
+    //========================================================
+    try {
+        buildVector(M, V);
         viewVector(V, M.lines);
+    } catch (const char *L) {
+        cout <<L<<endl;
+    }
     cleanData(M, V);
     return 0;
 }

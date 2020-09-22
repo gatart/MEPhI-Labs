@@ -34,9 +34,31 @@ T* loccMem(int num){ //Just for adding 1 class to project!!! I know that can use
     return tmp;
 }
 
-line *giveLine(line* tmp, const int &i);
+template<class T>
+T *giveSmth(T & head, const int &i){ //gives line or point
+    T *last = nullptr, *tmp = &head;
+    while(tmp){
+        if (tmp->key == i){ //Find
+            return tmp;
+        }
+        if (tmp->key > i){ //Place between
+            last->next = nullptr;
+            last->next = loccMem<T>(1);
+            last = last->next;
+            last->next = tmp;
+            last->key = i;
+            return last;
+        }
+        last = tmp;
+        tmp = tmp->next;
+    }
+    last->next = loccMem<T>(1); //place in the end
+    tmp = last->next;
+    tmp->key = i;
+    return tmp;
+};
 void buildMatrix(matrix &M);
-bool buildVector(const matrix &M, double *V);
+void buildVector(const matrix &M, double *V);
 
 void viewMatrix(const matrix &M);
 void viewVector(double *V, int Lines);
