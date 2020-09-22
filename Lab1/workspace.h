@@ -2,11 +2,12 @@
 #define WORKSPACE_H
 
 #include <iostream>
-#include <stdlib.h> //For exiting
 
 using std::cin;
 using std::cout;
 using std::endl;
+using std::numeric_limits;
+using std::istream;
 
 typedef struct point{
     point *next = nullptr;
@@ -15,7 +16,7 @@ typedef struct point{
 }point;
 typedef struct line{
     int key;
-    point *el;
+    point *el = nullptr;
     line *next = nullptr;
 }line;
 typedef struct matrix{
@@ -24,28 +25,17 @@ typedef struct matrix{
     int rows;
 }matrix;
 
+void getNum(matrix &M, std::string L);
+void getPoint(int &i, int &j, int &num, const matrix &M);
 template <class T>
-void getNum (T & a){
-    do
-        cin>>a; //can be bad alloc
-    while (!cin.good());
-}
-void getSize(matrix &M, std::string L);
-template <class T>
-T* loccMem(bool &flag, int num){
+T* loccMem(int num){ //Just for adding 1 class to project!!! I know that can use new without this function.
     T* tmp;
-    try {
-        tmp = new T[num];
-    } catch (std::bad_alloc& ba) {
-        cout <<ba.what()<<endl;
-        flag = true;
-        return nullptr;
-    }
-    flag = false;
+    tmp = new T[num];
     return tmp;
 }
 
-bool buildMatrix(matrix &M);
+line *giveLine(line* tmp, const int &i);
+void buildMatrix(matrix &M);
 bool buildVector(const matrix &M, double *V);
 
 void viewMatrix(const matrix &M);

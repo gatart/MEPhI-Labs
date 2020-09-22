@@ -1,11 +1,62 @@
 #include "workspace.h"
 
-void getSize(int &a, std::string L){
+void getNum(int &a, std::string L, int min, int max){
+    cin.exceptions(istream::failbit | istream::badbit);
     do{
-        cout <<L <<" ";
-        getNum(a);
-    }while (a <= 0);
+        cout <<L;
+        cin >>a;
+    }while (a < min || a > max); //If less then INT_MIN - exception, with INT_MAX - same
 };
+void getPoint(int &i, int &j, int &num, const matrix &M){
+    getNum(i, "First index: ", 0, M.lines);
+    getNum(j, "Second index: ", 0, M.rows);
+    getNum(num, "Value: ", INT_MIN, INT_MAX);
+}
+
+line* giveLine(line *tmp, const int &i){
+    line *last = nullptr;
+    while(tmp){
+        if (tmp->key == i){ //Find
+            return tmp;
+        }
+        if (tmp->key > i){ //Place between
+            last->next = nullptr;
+            last->next = loccMem<line>(1);
+            last = last->next;
+            last->next = tmp;
+            last->key = i;
+            return last;
+        }
+        last = tmp;
+        tmp = tmp->next;
+    }
+    last->next = loccMem<line>(1); //place in the end
+    tmp = last->next;
+    tmp->key = i;
+    return tmp;
+};
+void findPoint();
+
+void buildMatrix(matrix &M){
+    int i, j, num; //A[i][j] = num
+    line head = {-1, nullptr, nullptr}, *tmp1 = nullptr;
+    point *tmp2 = nullptr;
+
+    tmp1 = &head;
+    cout <<"Enter Matrix (enter 0 to end): "<<endl;
+    getPoint(i, j, num, M);
+    while (num != 0){
+        //--------------
+        tmp1 = giveLine(tmp1, i);
+        tmp2 = tmp1->el;
+        //tmp2 = giveLine(tmp2, j);
+
+        //--------------
+        getPoint(i, j, num, M);
+    }
+    M.mass = head.next;
+}
+/*
 bool buildMatrix(matrix &M){
     int i = 0, j, num; //A[i][j]
     line *tmp1 = nullptr;
@@ -60,28 +111,20 @@ bool buildMatrix(matrix &M){
     }
     return false;
 }
+*/
 bool buildVector(const matrix &M, double *V){
     int S, Max, Min, i = 0, j;
     line *tmp1 = M.mass;
     point *tmp2;
-    bool flag;
     while(tmp1){
         tmp2 = tmp1->el;
         S = 0;
-        Max = 0;
-        Min = 0;
+        Max = INT_MIN;
+        Min = INT_MAX;
         j = 0;
-        flag = true;
         while(tmp2){ //Count Sum, Max and Min in line
             S += tmp2->info;
             j++;
-            if (flag){ //first non-zero element
-                Max = tmp2->info;
-                Min = tmp2->info;
-                tmp2 = tmp2->next;
-                flag = false;
-                continue;
-            }
             if (Max < tmp2->info)
                 Max = tmp2->info;
             else if (Min > tmp2->info)
