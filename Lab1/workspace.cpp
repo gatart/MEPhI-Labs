@@ -1,6 +1,13 @@
 #include "workspace.h"
+#include <iostream>
+#include <limits.h>
 
-void getNum(int &a, std::string L, int min, int max){
+using std::cin;
+using std::cout;
+using std::endl;
+using std::istream;
+
+void getNum(int &a, const char *L, int min, int max){
     cin.exceptions(istream::failbit | istream::badbit);
     do{
         cout <<L;
@@ -18,7 +25,6 @@ bool testMatrix(const matrix &M){
     if (M.mass){
         return false;
     }
-    cout <<endl<<"Zero matrix!"<<endl;
     return true;
 }
 
@@ -45,7 +51,7 @@ void buildVector(const matrix &M, double *V){
     line *tmp1 = M.mass;
     point *tmp2;
     if(testMatrix(M)){ //Zero matrix
-        return;
+        throw "Zero matrix!";
     }
     while(tmp1){
         tmp2 = tmp1->el;

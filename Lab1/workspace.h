@@ -1,13 +1,13 @@
 #ifndef WORKSPACE_H
 #define WORKSPACE_H
 
-#include <iostream>
-
+/*
 using std::cin;
 using std::cout;
 using std::endl;
 using std::numeric_limits;
 using std::istream;
+*/
 
 typedef struct point{
     point *next = nullptr;
@@ -20,12 +20,12 @@ typedef struct line{
     line *next = nullptr;
 }line;
 typedef struct matrix{
-    line *mass;
+    line *mass = nullptr;
     int lines;
     int rows;
 }matrix;
 
-void getNum(matrix &M, std::string L);
+void getNum(int &a, const char *L, int min, int max);
 void getPoint(int &i, int &j, int &num, const matrix &M);
 template <class T>
 T* loccMem(int num){ //Just for adding 1 class to project!!! I know that can use new without this function.
@@ -41,7 +41,6 @@ T *giveSmth(T & head, const int &i){ //gives line or point
             return tmp;
         }
         if (tmp->key > i){ //Place between
-            last->next = nullptr;
             last->next = loccMem<T>(1);
             last = last->next;
             last->next = tmp;
@@ -59,7 +58,7 @@ T *giveSmth(T & head, const int &i){ //gives line or point
 
 void buildMatrix(matrix &M);
 void buildVector(const matrix &M, double *V);
-void testMatrix(const matrix M);
+bool testMatrix(const matrix &M);
 
 void viewMatrix(const matrix &M);
 void viewVector(double *V, int Lines);

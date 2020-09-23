@@ -1,4 +1,10 @@
-#include "workspace.cpp"
+#include "workspace.h"
+#include <iostream>
+
+using std::cin;
+using std::cout;
+using std::endl;
+using std::istream;
 
 int main() {
     matrix M;
@@ -10,11 +16,12 @@ int main() {
         getNum(M.rows, "Rows: ", -1, INT_MAX);
         buildMatrix(M);
         V = loccMem<double>(M.lines);
-    } catch (istream::failure e) { //Stream failure
-        cout <<e.what()<<endl<<"Incorrect input value!";
+    } catch (istream::failure& e) { //Stream failure
+        cout <<e.what()<<endl<<"Incorrect input value!"<<endl;
+        cleanMatrix(M);
         return 0;
     } catch(std::bad_alloc& ba){ //Bad alloc
-        cout <<ba.what()<<endl<<"Bad allocation of matrix!";
+        cout <<ba.what()<<endl<<"Bad allocation of matrix!"<<endl;
         cleanMatrix(M);
         return 0;
     }
