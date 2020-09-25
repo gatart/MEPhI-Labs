@@ -64,7 +64,7 @@ void buildVector(const matrix &M, double *V){
             j++;
             if (Max < tmp2->info)
                 Max = tmp2->info;
-            else if (Min > tmp2->info)
+            if (Min > tmp2->info)
                 Min = tmp2->info;
             tmp2 = tmp2->next;
         }
