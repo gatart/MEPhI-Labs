@@ -68,7 +68,7 @@ void buildVector(const matrix &M, double *V){
                 Min = tmp2->info;
             tmp2 = tmp2->next;
         }
-        if (j < M.rows - 1){ //if Min or Max is zero
+        if (j < M.rows){ //if Min or Max is zero
             if (Max < 0)
                 Max = 0;
             else if (Min > 0)
@@ -76,13 +76,14 @@ void buildVector(const matrix &M, double *V){
         }
         S -= Min;
         Max -= Min;
-        if (Max == 0)
+        if (Max == 0){
             throw "Division by zero!";
+        }
         V[i] = static_cast<double>(S) / Max;
         tmp1 = tmp1->next;
         ++i;
     }
-    if (i < M.lines - 1){
+    if (i < M.lines){
         throw "Division by zero!";
     }
 }
