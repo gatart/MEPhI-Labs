@@ -9,10 +9,8 @@ Menu::Menu(){
 }
 
 void Menu::getParam(long double & a){
-    do{
         cout <<"Enter A: ";
         getNum(a);
-    }while(a <= 0);
 }
 
 void Menu::startMenu(){
@@ -26,11 +24,17 @@ void Menu::startMenu(){
         getNum(ans);
     }
     if (ans == 0){ //Default
-       // Catenary catenary;
+        Catenary catenary;
     }else{ //Users params
-        getParam(A);
-        catenary.setParam(A);
-        //Catenary catenary(A); //why don't work? (Because Catenary() invoked earlier in Menu() ???)
+        do{
+            try {
+                getParam(A);
+                catenary = Catenary(A);
+                break;
+            } catch (std::invalid_argument &e) {
+                cout <<"Oops, something bad happend.It seems to me that it is: "<<e.what()<<endl;
+            }
+        }while(true);
     }
 }
 
@@ -57,8 +61,15 @@ void Menu::mainMenu(){
 
 void Menu::changeParm(){
     system("cls");
-    getParam(A);
-    catenary.setParam(A);
+    do{
+        try {
+            getParam(A);
+            catenary.setParam(A);
+            break;
+        } catch (std::invalid_argument &e) {
+            cout <<"Oops, something bad happend.It seems to me that it is: "<<e.what()<<endl;
+        }
+    }while(true);
 }
 
 void Menu::getY(){

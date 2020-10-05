@@ -6,8 +6,8 @@ class Catenary {
 private:
    long double m_a;
 public:
-   Catenary(); // Need a question!
-   //Catenary(const long double &A); //Why use of default "const long double &A = 1" doesn't work????
+   Catenary();
+   Catenary(const long double &A);
    void setParam(const long double &newA);
    long double findY(const long double &x);
    long double findLength(const long double &x1, const long double &x2);

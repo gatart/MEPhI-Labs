@@ -1,3 +1,4 @@
+#include <iostream>
 #include <cmath>
 #include "catenary.h"
 
@@ -6,14 +7,15 @@ Catenary::Catenary(){
     m_a = 1;
 }
 
-/*Catenary::Catenary(const long double &A){
-    cout<<"constr"<<endl<<A<<endl;
-    m_a = A;
-    cout<<m_a<<endl;
+Catenary::Catenary(const long double &A){
+    setParam(A);
 }
-*/
+
 
 void Catenary::setParam(const long double &newA){
+    if (newA <= 0){
+        throw std::invalid_argument("Invalid parameter");
+    }
     m_a = newA;
 }
 
