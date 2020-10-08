@@ -8,7 +8,7 @@ Menu::Menu(){
     A = 1;
 }
 
-void Menu::getParam(long double & a){
+void Menu::getParam(double & a){
         cout <<"Enter A: ";
         getNum(a);
 }
@@ -73,7 +73,7 @@ void Menu::changeParm(){
 }
 
 void Menu::getY(){
-    long double x;
+    double x;
     cout <<"Enter x: ";
     getNum(x);
     cout<<"y = "<<catenary.findY(x)<<endl
@@ -82,7 +82,7 @@ void Menu::getY(){
 }
 
 void Menu::getLength(){
-    long double x1, x2;
+    double x1, x2;
     cout <<"Enter x1: ";
     getNum(x1);
     cout <<"Enter x2: ";
@@ -93,7 +93,7 @@ void Menu::getLength(){
 }
 
 void Menu::getR(){
-    long double x;
+    double x;
     cout << "Enter x: ";
     getNum(x);
     cout<<"Radius = "<<catenary.findR(x)<<endl
@@ -102,7 +102,7 @@ void Menu::getR(){
 }
 
 void Menu::getOr(){ //bad
-    long double x;
+    double x;
     cout<<"Enter x: ";
     getNum(x);
     cout<<"Coordinats of the center:"<<endl
@@ -112,7 +112,7 @@ void Menu::getOr(){ //bad
 }
 
 void Menu::getS(){ //bad
-    long double x1, x2;
+    double x1, x2;
     cout <<"Enter x1: ";
     getNum(x1);
     cout <<"Enter x2: ";

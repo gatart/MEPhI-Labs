@@ -7,46 +7,50 @@ Catenary::Catenary(){
     m_a = 1;
 }
 
-Catenary::Catenary(const long double &A){
+Catenary::Catenary(const double &A){
     setParam(A);
 }
 
 
-void Catenary::setParam(const long double &newA){
+void Catenary::setParam(const double &newA){
     if (newA <= 0){
         throw std::invalid_argument("Invalid parameter");
     }
     m_a = newA;
 }
 
-long double Catenary::findY(const long double & x){ //A * ch(x / A)
-    long double y;
-    y = m_a * coshl(x / m_a);
+double Catenary::getParam(){
+    return m_a;
+}
+
+double Catenary::findY(const double & x){ //A * ch(x / A)
+    double y;
+    y = m_a * cosh(x / m_a);
     return y;
 }
 
-long double Catenary::findLength(const long double &x1, const long double &x2){ // |A *(sh(x2/A) - sh(x1/A))|
-    long double l;
-    l = fabsl(m_a * (sinhl(x2 / m_a) - sinhl(x1 / m_a)));
+double Catenary::findLength(const double &x1, const double &x2){ // |A *(sh(x2/A) - sh(x1/A))|
+    double l;
+    l = fabs(m_a * (sinh(x2 / m_a) - sinh(x1 / m_a)));
     return l;
 }
 
-long double Catenary::findR(const long double &x){ // A * ch(x/A)^2
-    long double R;
+double Catenary::findR(const double &x){ // A * ch(x/A)^2
+    double R;
     R = findY(x);
     R *= R / m_a;
     return R;
 }
 
-long double Catenary::findOr(const long double &x){ // sqrt(R(x)^2 - x^2) + y(x)
-    long double y;
+double Catenary::findOr(const double &x){ // sqrt(R(x)^2 - x^2) + y(x)
+    double y;
     y = findR(x);
-    y = sqrtl((y + x) * (y - x)) + findY(x);
+    y = sqrt((y + x) * (y - x)) + findY(x);
     return y;
 }
 
-long double Catenary::findS(const long double &x1, const long double &x2){ //  |(A^2)*(sh(x2/A) - sh(x1/A))|
-    long double S;
-    S = fabsl(m_a * m_a * (sinhl(x2 / m_a) - sinhl(x1 / m_a)));
+double Catenary::findS(const double &x1, const double &x2){ //  |(A^2)*(sh(x2/A) - sh(x1/A))|
+    double S;
+    S = fabs(m_a * m_a * (sinh(x2 / m_a) - sinh(x1 / m_a)));
     return S;
 }

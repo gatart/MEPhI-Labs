@@ -16,7 +16,7 @@ void getNum(T & a){
 class Menu
 {
 private:
-   long double A;
+   double A;
    Catenary catenary;
    void (Menu::*functionMass[7])() = {&Menu::changeParm, &Menu::getY,
            &Menu::getLength, &Menu::getR, &Menu::getOr, &Menu::getS, &Menu::exit};
@@ -31,7 +31,7 @@ public:
    void getOr();
    void getS();
    void exit();
-   void getParam(long double & a);
+   void getParam(double & a);
 };
 
 #endif // MENU_H
