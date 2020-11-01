@@ -11,17 +11,16 @@ class BigDec
 private:
     char num[48];
     int length = N;
-
-public:
     void changeSign();
+    void getComplement(const char num[N + 1], const int &length, char place[N + 1]);
+public:
     BigDec(long int set = 0);
     BigDec(char* set);
     ~BigDec();
-    ostream& print(ostream &out); //need overload
-    istream& input(istream &in); //need overload
-    void getComplement(const char num[N + 1], const int &length, char place[N + 1]); //need overload
-    BigDec& add(const BigDec &num2); //need overload
-    BigDec& sub(const BigDec &num2); //need overload
+    ostream& print(ostream &out);
+    istream& input(istream &in);
+    BigDec& add(const BigDec &num2);
+    BigDec& sub(const BigDec &num2);
     void great10();
     void less10();
 
