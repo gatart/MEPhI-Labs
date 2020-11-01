@@ -14,8 +14,7 @@ int main()
     cout<<"Output: ";
     c = a.add(b);
     c.print(cout);
-    cout<<endl;
-    cout <<"Sub"<<endl<<"Enter 1 number: ";
+    cout <<endl<<"Sub"<<endl<<"Enter 1 number: ";
     a.input(cin);
     cout <<"Enter 2 number: ";
     b.input(cin);
@@ -25,12 +24,12 @@ int main()
     cout <<endl<<"*=10"<<endl<<"Enter number: ";
     c.input(cin);
     cout<<"Output: ";
-    c.great10();
-    c.print(cout);
+    a = c.great10();
+    a.print(cout);
     cout <<endl<<"/=10"<<endl<<"Enter number: ";
     c.input(cin);
     cout<<"Output: ";
-    c.less10();
-    c.print(cout);
+    a = c.less10();
+    a.print(cout);
     return 0;
 }

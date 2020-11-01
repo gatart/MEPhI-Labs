@@ -149,10 +149,11 @@ BigDec& BigDec::add(const BigDec &num2){
     if (a[0] == 0 && overflow == 2)
         throw logic_error("Negative Overflow");
     getComplement(a, this->length, a);
+    BigDec *ans = new BigDec;
     for (int i = 0; i <= length; ++i){
-        num[i] = a[i];
+        ans->num[i] = a[i];
     }
-    return *this;
+    return *ans;
 }
 
 BigDec& BigDec::sub(const BigDec &num2){
@@ -161,19 +162,23 @@ BigDec& BigDec::sub(const BigDec &num2){
     return add(ans);
 }
 
-void BigDec::great10(){
+BigDec& BigDec::great10(){
     if (num[1] != 0) //lost of the greatest bit
         throw logic_error("Number Overflow");
 
+    BigDec *ans = new BigDec;
     for (int i = 1; i < length; ++i)
-        num[i] = num[i + 1];
-    num[length] = 0;
+        ans->num[i] = num[i + 1];
+    ans->num[length] = 0;
+    return *ans;
 }
 
-void BigDec::less10(){ //don't care about the least bit
+BigDec& BigDec::less10(){ //don't care about the least bit
+    BigDec *ans = new BigDec;
     for (int i = length; i > 1; --i)
-        num[i] = num[i - 1];
-    num[1] = 0;
+        ans->num[i] = num[i - 1];
+    ans->num[1] = 0;
+    return *ans;
 }
 
 BigDec::~BigDec() = default;
