@@ -9,17 +9,19 @@ const int N = 47;
 class BigDec
 {
 private:
-    unsigned char num[48];
-    const int length = 47;
+    char num[48];
+    int length = N;
+
 public:
+    void changeSign();
     BigDec(long int set = 0);
     BigDec(char* set);
     ~BigDec();
-    ostream& print(); //need overload
+    ostream& print(ostream &out); //need overload
     istream& input(istream &in); //need overload
-    void getComplement(); //need overload
-    BigDec add(); //need overload
-    BigDec sub(); //need overload
+    void getComplement(const char num[N + 1], const int &length, char place[N + 1]); //need overload
+    BigDec& add(const BigDec &num2); //need overload
+    BigDec& sub(const BigDec &num2); //need overload
     void great10();
     void less10();
 
