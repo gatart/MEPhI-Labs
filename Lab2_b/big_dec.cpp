@@ -1,7 +1,6 @@
 #include "big_dec.h"
 #include <cstring>
 
-
 void BigDec::changeSign(){
     if (num[0] == 1)
         num[0] = 0;
@@ -36,9 +35,8 @@ BigDec::BigDec(const char *set){
         throw invalid_argument("Too short string");
 
     if (set[0] != '+' && set[0] != '-'){ //normal sign?
-        if (set[0] < '0' || set[0] > '9'){
+        if (set[0] < '0' || set[0] > '9')
             throw invalid_argument("Not number");
-        }
         if (len >= 48) //to long number without sign
             throw logic_error("Number Overflow");
         end = 0;
@@ -59,44 +57,42 @@ BigDec::BigDec(const char *set){
     }
 }
 
-ostream& BigDec::print(ostream &out){
-    if (num[0] == 1)
+std::ostream& operator <<(std::ostream& out, const BigDec& a){
+    if (a.num[0] == 1)
         out <<'-';
     bool flag = true; //flag for useless zeros
-    for (int i = 1; i <= length; ++i){
+    for (int i = 1; i <= a.length; ++i){
         if (flag){ //skip useless zeros
-            if (num[i] == 0)
+            if (a.num[i] == 0)
                 continue;
             else
                 flag = false;
         }
-        out<<static_cast<unsigned int>(num[i]);
-    }
-    if (flag){
-        out<<0;
+        out<<static_cast<unsigned int>(a.num[i]);
     }
     return out << dec;
 }
 
-istream& BigDec::input(istream &in){
-    char name[N + 1];
-        in.getline(name, N + 1);
-        if (in.fail()) {
-             in.clear();
-             in.ignore(32767, '\n');
-             throw invalid_argument("Wrong string");
-        }
+std::istream& operator >>(std::istream& in, BigDec& a){
+    char name[N + 2];
+    in.getline(name, N + 2);
+    if (in.fail()) {
+        in.clear();
+        in.ignore(32767, '\n');
+        throw invalid_argument("Wrong string");
+    }
 
-        BigDec num(name); //check of string in constructor
-        *this = num;
-        return in;
+    BigDec num(name); //check of string in constructor
+    a = num;
+    return in;
 }
 
-void BigDec::getComplement(const char num[N], const int &length, char place[N]){
+char* BigDec::operator ~()const{
+    char * place = new char [static_cast<size_t>(this->length + 1)];
     if (num[0] == 0){ //positive number
         for (int i = 0; i <= length; ++i)
             place[i] = num[i];
-        return;
+        return place;
     }
 
     bool flag = true; //negative number
@@ -114,13 +110,13 @@ void BigDec::getComplement(const char num[N], const int &length, char place[N]){
     }
     if (flag) // negative zero change to zero
         place[0] = 0;
+    return place;
 }
 
-BigDec& BigDec::add(const BigDec &num2){
-    char a[N + 1], b[N + 1];
-    getComplement(this->num, this->length, a);
-    getComplement(num2.num, num2.length, b);
-
+BigDec& BigDec::operator +(const BigDec &num2)const{
+    char *a, *b;
+    a = ~(*this);
+    b = ~num2;
     bool flag = false; //flag of adding 1 to bite
     int overflow;
     if (a[0] == 0 && b[0] == 0)
@@ -153,18 +149,21 @@ BigDec& BigDec::add(const BigDec &num2){
         throw logic_error("Positive Overflow");
     if (a[0] == 0 && overflow == 2)
         throw logic_error("Negative Overflow");
-    getComplement(a, this->length, a);
     BigDec *ans = new BigDec;
+    for (int i = 0; i <= length; ++i){
+        ans->num[i] = a[i];
+    }
+    a = ~(*ans);
     for (int i = 0; i <= length; ++i){
         ans->num[i] = a[i];
     }
     return *ans;
 }
 
-BigDec& BigDec::sub(const BigDec &num2){
+BigDec& BigDec::operator -(const BigDec &num2)const{
     BigDec ans = num2;
     ans.changeSign(); //just change sign of second number and add it to first
-    return add(ans);
+    return *this + ans;
 }
 
 BigDec& BigDec::great10(){
