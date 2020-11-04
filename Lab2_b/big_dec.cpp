@@ -31,8 +31,12 @@ BigDec::BigDec(const char *set){
     for(char &c : num)
         c = 0;
 
-    if (len < 1)
+    if (len < 1){
         throw invalid_argument("Too short string");
+    }
+    if (len == 1 && (set[0] < '0' || set[0] > '9')){ //only sign
+        throw invalid_argument("Not number");
+    }
 
     if (set[0] != '+' && set[0] != '-'){ //normal sign?
         if (set[0] < '0' || set[0] > '9')
@@ -58,8 +62,18 @@ BigDec::BigDec(const char *set){
 }
 
 std::ostream& operator <<(std::ostream& out, const BigDec& a){
-    if (a.num[0] == 1)
+    bool zero = true;
+    for (int i = 1; i <= a.length; ++i){ //zero?
+        if (a.num[i] != 0)
+            zero = false;
+    }
+    if (zero){ //zero
+        out <<0;
+        return out << dec;
+    }
+    if (a.num[0] == 1 && !zero){ //if '-' and not zero
         out <<'-';
+    }
     bool flag = true; //flag for useless zeros
     for (int i = 1; i <= a.length; ++i){
         if (flag){ //skip useless zeros

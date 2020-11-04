@@ -6,30 +6,29 @@ using namespace std;
 
 int main()
 {
+    long int smth = -1400569258;
+    BigDec k(smth);
+    cout <<"Long constructor: "<< k<<endl;
     BigDec a, b, c;
     cout <<"Add" << endl<<"Enter 1 number: ";
     cin >> a;
     cout<<"Enter 2 number: ";
     cin >> b;
-    cout<<"Output: ";
     c = a + b;
-    cout <<c;
-    cout <<endl<<"Sub"<<endl<<"Enter 1 number: ";
+    cout <<"Output: " <<c <<endl;
+    cout <<"Sub" <<endl <<"Enter 1 number: ";
     cin >> a;
     cout <<"Enter 2 number: ";
     cin >> b;
-    cout<<"Output: ";
     c = a - b;
-    cout <<c;
-    cout <<endl<<"*=10"<<endl<<"Enter number: ";
+    cout<<"Output: " <<c <<endl;
+    cout <<"*=10" <<endl <<"Enter number: ";
     cin >> c;
-    cout<<"Output: ";
     a = c.great10();
-    cout <<a;
-    cout <<endl<<"/=10"<<endl<<"Enter number: ";
+    cout<<"Output: " <<a <<endl;
+    cout <<"/=10" <<endl <<"Enter number: ";
     cin >> c;
-    cout<<"Output: ";
     a = c.less10();
-    cout <<a <<endl;
+    cout<<"Output: " <<a <<endl;
     return 0;
 }
