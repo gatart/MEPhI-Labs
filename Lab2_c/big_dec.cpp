@@ -8,7 +8,7 @@ void BigDec::changeSign(){
         num[0] = 1;
 }
 
-BigDec::BigDec(const long int &set){ //unsigned long int has less digits that 47
+BigDec::BigDec(const long int set){ //unsigned long int has less digits that 47
     int digit;
     long int put = set;
     bool zero = true;
@@ -106,17 +106,50 @@ std::ostream& operator <<(std::ostream& out, const BigDec& a){
 }
 
 std::istream& operator >>(std::istream& in, BigDec& a){
-    char name[N + 2];
-    in.getline(name, N + 2);
-    if (in.fail()) {
-        in.clear();
-        in.ignore(32767, '\n');
-        throw invalid_argument("Wrong string");
-    }
+    string input;
+    getline(in, input);
+
+    char* name;
+    name = new char[input.length() + 1];
+    strcpy(name, input.c_str());
 
     BigDec num(name); //check of string in constructor
     a = num;
+    delete[] name;
+    input.clear();
     return in;
+}
+
+BigDec& BigDec::enlarge(const int &length)const{
+    BigDec *ans = new BigDec;
+    ans->length = length;
+    ans->num = new char[static_cast<size_t>(length + 1)];
+    ans->num[0] = this->num[0];
+
+    for (int i = length, k = this->length; i > 0; --i){
+        if (k == 0){
+            ans->num[i] = 0;
+        }else{
+            ans->num[i] = this->num[k--];
+        }
+    }
+    return *ans;
+}
+
+void BigDec::overflow(bool flag){
+    if (flag){ //Sign
+        this->num[0] = 0;
+    }else{
+        this->num[0] = 1;
+    }
+
+    cout <<"Overflow: "<<endl;
+    char* a;
+    a = ~(*this);
+    this->num = a;
+    cout <<*this <<endl;
+    *this = this->enlarge(this->length + 1);
+    this->num[1] = 1;
 }
 
 char* BigDec::operator ~()const{
@@ -147,8 +180,26 @@ char* BigDec::operator ~()const{
 
 BigDec& BigDec::operator +(const BigDec &num2)const{
     char *a, *b;
-    a = ~(*this);
-    b = ~num2;
+    int length;
+
+    if (this->length > num2.length){ //get complements with same length
+        length = this->length;
+        a = ~(*this);
+        BigDec tmp;
+        tmp = num2.enlarge(length);
+        b = ~tmp;
+    }else{
+        b = ~num2;
+        length = num2.length;
+        if (this->length < num2.length){
+            BigDec tmp;
+            tmp = this->enlarge(length);
+            a = ~tmp;
+        }else{
+            a = ~(*this);
+        }
+    }
+
     bool flag = false; //flag of adding 1 to bite
     int overflow;
     if (a[0] == 0 && b[0] == 0)
@@ -177,18 +228,21 @@ BigDec& BigDec::operator +(const BigDec &num2)const{
         a[0] = 1;
     if (a[0] == 2) //overflow or negative number with positive one which was bigger
         a[0] = 0;
-    if (a[0] == 1 && overflow == 1)
-        throw logic_error("Positive Overflow");
-    if (a[0] == 0 && overflow == 2)
-        throw logic_error("Negative Overflow");
+
     BigDec *ans = new BigDec;
-    for (int i = 0; i <= length; ++i){
-        ans->num[i] = a[i];
+    ans->length = length;
+    ans->num = a;
+    if (a[0] == 1 && overflow == 1){ //positive overflow
+        ans->overflow(true);
+    }else{
+        if (a[0] == 0 && overflow == 2){ //negative overflow
+            ans->overflow(false);
+        }else{ //normal
+            a = ~(*ans);
+            ans->num = a;
+        }
     }
-    a = ~(*ans);
-    for (int i = 0; i <= length; ++i){
-        ans->num[i] = a[i];
-    }
+
     return *ans;
 }
 
@@ -199,23 +253,41 @@ BigDec& BigDec::operator -(const BigDec &num2)const{
 }
 
 BigDec& BigDec::great10(){
-    if (num[1] != 0) //lost of the greatest bit
-        throw logic_error("Number Overflow");
-
     BigDec *ans = new BigDec;
+
+    if (this->length == 1 && this->num[1] == 0){ //zero
+        ans->length = 1;
+        ans->num = new char[1];
+        ans->num[1] = 0;
+        return *ans;
+    }
+
+    ans->length = length + 1;
+    ans->num = new char[static_cast<size_t>(length + 2)];
+
     ans->num[0] = num[0];
-    for (int i = 1; i < length; ++i)
-        ans->num[i] = num[i + 1];
-    ans->num[length] = 0;
+    for (int i = 1; i <= length; ++i)
+        ans->num[i] = num[i];
+    ans->num[ans->length] = 0;
     return *ans;
 }
 
 BigDec& BigDec::less10(){ //don't care about the least bit
     BigDec *ans = new BigDec;
+
+    if (this->length == 1 && this->num[1] == 0){ //zero
+        ans->length = 1;
+        ans->num = new char[1];
+        ans->num[1] = 0;
+        return *ans;
+    }
+
+    ans->length = length - 1;
+    ans->num = new char[static_cast<size_t>(length)];
+
     ans->num[0] = num[0];
-    for (int i = length; i > 1; --i)
-        ans->num[i] = num[i - 1];
-    ans->num[1] = 0;
+    for (int i = 1; i <= ans->length; ++i)
+        ans->num[i] = num[i];
     return *ans;
 }
 
