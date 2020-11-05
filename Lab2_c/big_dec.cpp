@@ -2,7 +2,7 @@
 #include <cstring>
 
 
-BigDec::BigDec(const long int set){ //unsigned long int has less digits that 47
+BigDec::BigDec(const long int set){
     int digit;
     long int put = set;
     bool zero = true;
@@ -48,7 +48,7 @@ BigDec::BigDec(const long int set){ //unsigned long int has less digits that 47
 }
 
 BigDec::BigDec(const char *set){
-    int end = 1; //end changes for +228 and 228(no sign)
+    int beg = 1; //beg changes for +228 and 228(no sign)
     int len = static_cast<int>(strlen(set));
 
     if (len < 1){ //empty string
@@ -57,10 +57,10 @@ BigDec::BigDec(const char *set){
     if (set[0] != '+' && set[0] != '-'){ //normal sign?
         if (set[0] < '0' || set[0] > '9')
             throw invalid_argument("Not number");
-        end = 0; //with no sign, like 228
+        beg = 0; //with no sign, like 228
     }
 
-    length = static_cast<int>(strlen(set)) - end;
+    length = static_cast<int>(strlen(set)) - beg;
     num = new char[static_cast<size_t>(length + 1)];
 
     if (set[0] == '-'){ //setSign
@@ -70,14 +70,17 @@ BigDec::BigDec(const char *set){
     }
 
     bool zero = true; //if number is 0 | don't copy useless 0
-    for (int i = length - 1 + end, k = length; i >= end; --i, --k){
+    int no_need = 0;
+    for (int i = beg, k = 1; i <= length - 1 + beg; ++i, ++k){
         if (set[i] < '0' || set[i] > '9'){
             delete []num;
             throw invalid_argument("Not number");
         }else{
-            if (!zero || set[i] != '0'){
+            if (!zero || set[i] != '0'){ //useful digits
                 num[k] = set[i] - '0';
                 zero = false;
+            }else{ //useless 0
+                ++no_need;
             }
         }
     }
@@ -87,6 +90,17 @@ BigDec::BigDec(const char *set){
         num[0] = 0;
         num[1] = 0;
         length = 1;
+    }else{
+        if (no_need != 0){ //has useless 0
+            length = length - no_need;
+            char* tmp = new char[static_cast<size_t>(length + 1)];
+            tmp[0] = num[0];
+            for (int i = 1; i <= length; ++i){
+                tmp[i] = num[i + no_need];
+            }
+            delete[] num;
+            num = tmp;
+        }
     }
 }
 
@@ -146,6 +160,34 @@ void BigDec::overflow(bool flag){
     cout <<*this <<endl;
     *this = this->enlarge(this->length + 1);
     this->num[1] = 1;
+}
+
+void BigDec::correction(char *a){
+    int no_need = 0;
+    for (int i = 1; i <= length; ++i){ //count useless 0
+        if (num[i] != 0){
+            break;
+        }
+        ++no_need;
+    }
+    if (no_need == length){ //all 0
+        no_need = length - 1;
+        a[0] = 0;
+    }
+    if (no_need == 0){ //no useless
+        delete[]num;
+        num = a;
+        return;
+    }
+    char* tmp = new char[static_cast<size_t>(length - no_need + 1)];
+    tmp[0] = a[0];
+    for (int i = 1; i <= length - no_need; ++i){
+        tmp[i] = a[i + no_need];
+    }
+    delete[]a;
+    delete[]num;
+    length = length - no_need + 1;
+    num = tmp;
 }
 
 char* BigDec::operator ~()const{
@@ -293,31 +335,3 @@ BigDec& BigDec::less10(){ //don't care about the least bit
 }
 
 BigDec::~BigDec() = default;
-
-void BigDec::correction(char *a){
-    int no_need = 0;
-    for (int i = 1; i <= length; ++i){ //count useless 0
-        if (num[i] != 0){
-            break;
-        }
-        ++no_need;
-    }
-    if (no_need == length){ //all 0
-        no_need = length - 1;
-        a[0] = 0;
-    }
-    if (no_need == 0){ //no useless
-        delete[]num;
-        num = a;
-        return;
-    }
-    char* tmp = new char[static_cast<size_t>(length - no_need + 1)];
-    tmp[0] = a[0];
-    for (int i = 1; i <= length - no_need; ++i){
-        tmp[i] = a[i + no_need];
-    }
-    delete[]a;
-    delete[]num;
-    length = length - no_need + 1;
-    num = tmp;
-}
