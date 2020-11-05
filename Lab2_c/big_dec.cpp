@@ -1,12 +1,6 @@
 #include "big_dec.h"
 #include <cstring>
 
-void BigDec::changeSign(){
-    if (num[0] == 1)
-        num[0] = 0;
-    else
-        num[0] = 1;
-}
 
 BigDec::BigDec(const long int set){ //unsigned long int has less digits that 47
     int digit;
@@ -247,10 +241,15 @@ BigDec& BigDec::operator +(const BigDec &num2)const{
 }
 
 BigDec& BigDec::operator -(const BigDec &num2)const{
-    BigDec ans = num2;
-    ans.changeSign(); //just change sign of second number and add it to first
-    return *this + ans;
+    return *this + (-num2);
 }
+
+const BigDec BigDec::operator - () const {
+        BigDec res = *this;
+        res.num[0] = num[0] == 0 ? 1 : 0;
+
+        return res;
+    }
 
 BigDec& BigDec::great10(){
     BigDec *ans = new BigDec;
@@ -292,3 +291,4 @@ BigDec& BigDec::less10(){ //don't care about the least bit
 }
 
 BigDec::~BigDec() = default;
+

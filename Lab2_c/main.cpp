@@ -10,6 +10,8 @@ int main()
     BigDec k(smth);
     cout <<"Long constructor: "<< k<<endl;
     BigDec a, b, c;
+    cin >> a;
+    cout <<-a<<endl;
     cout <<"Add" << endl<<"Enter 1 number: ";
     cin >> a;
     cout<<"Enter 2 number: ";
