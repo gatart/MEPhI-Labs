@@ -46,6 +46,9 @@ BigDec::BigDec(const long int set){
 }
 
 BigDec::BigDec(const char *set){
+    if (set == nullptr){
+        throw invalid_argument("Initialization by nullptr");
+    }
     int beg = 1; //beg changes for +228 and 228(no sign)
     int len = static_cast<int>(strlen(set));
 
@@ -103,6 +106,20 @@ BigDec::BigDec(const char *set){
     }
 }
 
+BigDec::BigDec(const BigDec &a){
+    try {
+        this->length = a.length;
+        num = new char[static_cast<size_t>(length + 1)];
+        for (int i = 0; i <= length; i++)
+            num[i] = a.num[i];
+    }catch (...) {
+        cout << "Empty initialization!";
+        length = 1;
+        num = new char[2];
+        num[0] = num[1] = 0;
+    }
+}
+
 std::ostream& operator <<(std::ostream& out, const BigDec& a){
     if (a.num[0] == 1 && !(a.length == 1 && a.num[1] == 0)){ //if '-' and not zero
         out <<'-';
@@ -127,6 +144,30 @@ std::istream& operator >>(std::istream& in, BigDec& a){
     delete[] name;
     input.clear();
     return in;
+}
+
+BigDec& BigDec::operator =(const BigDec &num2){
+    if(num != num2.num){
+        if (num != nullptr){
+            delete[]num;
+        }
+        length = num2.length;
+        num = new char [static_cast<size_t>(length + 1)];
+        for (int i = 0; i <= length; ++i){
+            num[i] = num2.num[i];
+        }
+    }
+    return *this;
+}
+
+BigDec& BigDec::operator=(BigDec&& num2){
+    if (num != nullptr){
+        delete[]num;
+        num = num2.num;
+        length = num2.length;
+        num2.num = nullptr;
+    }
+    return *this;
 }
 
 const BigDec BigDec::enlarge(const int &length)const{
@@ -299,7 +340,7 @@ BigDec& BigDec::operator -(const BigDec &num2)const{
 }
 
 const BigDec BigDec::operator - () const {
-        BigDec res = *this;
+        BigDec res(*this);
         res.num[0] = num[0] == 0 ? 1 : 0;
         return res;
     }
@@ -309,8 +350,8 @@ BigDec& BigDec::great10(){
 
     if (this->length == 1 && this->num[1] == 0){ //zero
         ans->length = 1;
-        ans->num = new char[1];
-        ans->num[1] = 0;
+        ans->num = new char[2];
+        ans->num[0] = ans->num[1] = 0;
         return *ans;
     }
 
@@ -328,8 +369,8 @@ BigDec& BigDec::less10(){ //don't care about the least bit
 
     if (this->length == 1 && this->num[1] == 0){ //zero
         ans->length = 1;
-        ans->num = new char[1];
-        ans->num[1] = 0;
+        ans->num = new char[2];
+        ans->num[0] = ans->num[1] = 0;
         return *ans;
     }
 
@@ -341,4 +382,6 @@ BigDec& BigDec::less10(){ //don't care about the least bit
     return *ans;
 }
 
-BigDec::~BigDec() = default;
+BigDec::~BigDec(){
+    delete[]num;
+}
