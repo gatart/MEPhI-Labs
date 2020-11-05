@@ -17,12 +17,14 @@ int main()
     cout<<"Enter 2 number: ";
     cin >> b;
     c = a + b;
+    cout <<a <<endl<<b<<endl;
     cout <<"Output: " <<c <<endl;
     cout <<"Sub" <<endl <<"Enter 1 number: ";
     cin >> a;
     cout <<"Enter 2 number: ";
     cin >> b;
     c = a - b;
+    cout <<a <<endl<<b<<endl;
     cout<<"Output: " <<c <<endl;
     cout <<"*=10" <<endl <<"Enter number: ";
     cin >> c;

@@ -10,8 +10,9 @@ class BigDec
 private:
     char *num;
     int length;
-    BigDec& enlarge(const int &length)const; //for ariphmetic operations adding 0 before meaning numbers
+    const BigDec enlarge(const int &length)const; //for ariphmetic operations adding 0 before meaning numbers
     void overflow(bool flag); //enlarging if overflow | true - positive, false - negative
+    void correction(char* a); //delete useless 0
 public:
     BigDec(const long int set = 0); //unsigned long int has less digits that 47
     BigDec(const char* set);

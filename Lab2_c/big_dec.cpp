@@ -69,12 +69,24 @@ BigDec::BigDec(const char *set){
         num[0] = 0;
     }
 
+    bool zero = true; //if number is 0 | don't copy useless 0
     for (int i = length - 1 + end, k = length; i >= end; --i, --k){
         if (set[i] < '0' || set[i] > '9'){
             delete []num;
             throw invalid_argument("Not number");
+        }else{
+            if (!zero || set[i] != '0'){
+                num[k] = set[i] - '0';
+                zero = false;
+            }
         }
-        num[k] = set[i] - '0';
+    }
+    if (zero){
+        delete[]num;
+        num = new char[2];
+        num[0] = 0;
+        num[1] = 0;
+        length = 1;
     }
 }
 
@@ -83,18 +95,8 @@ std::ostream& operator <<(std::ostream& out, const BigDec& a){
         out <<'-';
     }
 
-    bool flag = true; //flag for useless zeros
     for (int i = 1; i <= a.length; ++i){
-        if (flag){ //skip useless zeros
-            if (a.num[i] == 0)
-                continue;
-            else
-                flag = false;
-        }
         out<<static_cast<unsigned int>(a.num[i]);
-    }
-    if (flag){
-        out <<0;
     }
     return out << dec;
 }
@@ -114,20 +116,20 @@ std::istream& operator >>(std::istream& in, BigDec& a){
     return in;
 }
 
-BigDec& BigDec::enlarge(const int &length)const{
-    BigDec *ans = new BigDec;
-    ans->length = length;
-    ans->num = new char[static_cast<size_t>(length + 1)];
-    ans->num[0] = this->num[0];
+const BigDec BigDec::enlarge(const int &length)const{
+    BigDec ans;
+    ans.length = length;
+    ans.num = new char[static_cast<size_t>(length + 1)];
+    ans.num[0] = this->num[0];
 
     for (int i = length, k = this->length; i > 0; --i){
         if (k == 0){
-            ans->num[i] = 0;
+            ans.num[i] = 0;
         }else{
-            ans->num[i] = this->num[k--];
+            ans.num[i] = this->num[k--];
         }
     }
-    return *ans;
+    return ans;
 }
 
 void BigDec::overflow(bool flag){
@@ -233,7 +235,7 @@ BigDec& BigDec::operator +(const BigDec &num2)const{
             ans->overflow(false);
         }else{ //normal
             a = ~(*ans);
-            ans->num = a;
+            ans->correction(a);
         }
     }
 
@@ -292,3 +294,30 @@ BigDec& BigDec::less10(){ //don't care about the least bit
 
 BigDec::~BigDec() = default;
 
+void BigDec::correction(char *a){
+    int no_need = 0;
+    for (int i = 1; i <= length; ++i){ //count useless 0
+        if (num[i] != 0){
+            break;
+        }
+        ++no_need;
+    }
+    if (no_need == length){ //all 0
+        no_need = length - 1;
+        a[0] = 0;
+    }
+    if (no_need == 0){ //no useless
+        delete[]num;
+        num = a;
+        return;
+    }
+    char* tmp = new char[static_cast<size_t>(length - no_need + 1)];
+    tmp[0] = a[0];
+    for (int i = 1; i <= length - no_need; ++i){
+        tmp[i] = a[i + no_need];
+    }
+    delete[]a;
+    delete[]num;
+    length = length - no_need + 1;
+    num = tmp;
+}
