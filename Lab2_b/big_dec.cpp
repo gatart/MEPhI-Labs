@@ -127,9 +127,9 @@ char* BigDec::operator ~()const{
     return place;
 }
 
-BigDec& BigDec::operator +(const BigDec &num2)const{
+BigDec operator +(const BigDec &num1, const BigDec &num2){
     char *a, *b;
-    a = ~(*this);
+    a = ~(num1);
     b = ~num2;
     bool flag = false; //flag of adding 1 to bite
     int overflow;
@@ -143,7 +143,7 @@ BigDec& BigDec::operator +(const BigDec &num2)const{
         }
     }
 
-    for (int i = length; i >= 0; --i){
+    for (int i = num1.length; i >= 0; --i){
         a[i] = a[i] + b[i];
         if (flag){
             a[i] += 1;
@@ -163,42 +163,42 @@ BigDec& BigDec::operator +(const BigDec &num2)const{
         throw logic_error("Positive Overflow");
     if (a[0] == 0 && overflow == 2)
         throw logic_error("Negative Overflow");
-    BigDec *ans = new BigDec;
-    for (int i = 0; i <= length; ++i){
-        ans->num[i] = a[i];
+    BigDec ans;
+    for (int i = 0; i <= num1.length; ++i){
+        ans.num[i] = a[i];
     }
-    a = ~(*ans);
-    for (int i = 0; i <= length; ++i){
-        ans->num[i] = a[i];
+    a = ~(ans);
+    for (int i = 0; i <= num1.length; ++i){
+        ans.num[i] = a[i];
     }
-    return *ans;
+    return ans;
 }
 
-BigDec& BigDec::operator -(const BigDec &num2)const{
+BigDec operator -(const BigDec &num1, const BigDec &num2){
     BigDec ans = num2;
     ans.changeSign(); //just change sign of second number and add it to first
-    return *this + ans;
+    return num1 + ans;
 }
 
-BigDec& BigDec::great10(){
+const BigDec BigDec::great10(){
     if (num[1] != 0) //lost of the greatest bit
         throw logic_error("Number Overflow");
 
-    BigDec *ans = new BigDec;
-    ans->num[0] = num[0];
+    BigDec ans;
+    ans.num[0] = num[0];
     for (int i = 1; i < length; ++i)
-        ans->num[i] = num[i + 1];
-    ans->num[length] = 0;
-    return *ans;
+        ans.num[i] = num[i + 1];
+    ans.num[length] = 0;
+    return ans;
 }
 
-BigDec& BigDec::less10(){ //don't care about the least bit
-    BigDec *ans = new BigDec;
-    ans->num[0] = num[0];
+const BigDec BigDec::less10(){ //don't care about the least bit
+    BigDec ans;
+    ans.num[0] = num[0];
     for (int i = length; i > 1; --i)
-        ans->num[i] = num[i - 1];
-    ans->num[1] = 0;
-    return *ans;
+        ans.num[i] = num[i - 1];
+    ans.num[1] = 0;
+    return ans;
 }
 
 BigDec::~BigDec() = default;

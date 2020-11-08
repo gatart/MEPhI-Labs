@@ -23,9 +23,12 @@ int main()
     c.print(cout);
     cout <<endl<<"*=10"<<endl<<"Enter number: ";
     c.input(cin);
-    cout<<"Output: ";
-    a = c.great10();
-    a.print(cout);
+    try {
+        cout<<"Output: ";
+        a = c.great10();
+        a.print(cout);
+    } catch (...) {
+    }
     cout <<endl<<"/=10"<<endl<<"Enter number: ";
     c.input(cin);
     cout<<"Output: ";

@@ -9,12 +9,12 @@ BigDec::BigDec(const long int set){
     bool sign = false;
     length = 0;
 
-    if (set < 0){ //findSign
+    if (set < 0){
         sign = true;
         put *= -1;
     }
 
-    while (put != 0){ //counting length
+    while (put != 0){
         ++length;
         zero = false;
         put /= 10;
@@ -29,7 +29,7 @@ BigDec::BigDec(const long int set){
     }
 
     num = new char[static_cast<size_t>(length + 1)];
-    if (sign){ //setSign
+    if (sign){
         num[0] = 1;
         put = -set;
     }else{
@@ -38,7 +38,7 @@ BigDec::BigDec(const long int set){
     }
 
     int i = length;
-    while (put != 0){ //copy number from the end
+    while (put != 0){
         digit = put % 10;
         put /= 10;
         num[i--] = static_cast<char>(digit);
@@ -55,7 +55,7 @@ BigDec::BigDec(const char *set){
     if (len < 1){ //empty string
         throw invalid_argument("Too short string");
     }
-    if (set[0] != '+' && set[0] != '-'){ //normal sign?
+    if (set[0] != '+' && set[0] != '-'){
         if (set[0] < '0' || set[0] > '9')
             throw invalid_argument("Not number");
         beg = 0; //with no sign, like 228
@@ -64,7 +64,7 @@ BigDec::BigDec(const char *set){
     length = static_cast<int>(strlen(set)) - beg;
     num = new char[static_cast<size_t>(length + 1)];
 
-    if (set[0] == '-'){ //setSign
+    if (set[0] == '-'){
         num[0] = 1;
     }else{
         num[0] = 0;
@@ -120,54 +120,8 @@ BigDec::BigDec(const BigDec &a){
     }
 }
 
-std::ostream& operator <<(std::ostream& out, const BigDec& a){
-    if (a.num[0] == 1 && !(a.length == 1 && a.num[1] == 0)){ //if '-' and not zero
-        out <<'-';
-    }
-
-    for (int i = 1; i <= a.length; ++i){
-        out<<static_cast<unsigned int>(a.num[i]);
-    }
-    return out << dec;
-}
-
-std::istream& operator >>(std::istream& in, BigDec& a){
-    string input;
-    getline(in, input);
-
-    char* name;
-    name = new char[input.length() + 1];
-    strcpy(name, input.c_str());
-
-    BigDec num(name); //check of string in constructor
-    a = num;
-    delete[] name;
-    input.clear();
-    return in;
-}
-
-BigDec& BigDec::operator =(const BigDec &num2){
-    if(num != num2.num){
-        if (num != nullptr){
-            delete[]num;
-        }
-        length = num2.length;
-        num = new char [static_cast<size_t>(length + 1)];
-        for (int i = 0; i <= length; ++i){
-            num[i] = num2.num[i];
-        }
-    }
-    return *this;
-}
-
-BigDec& BigDec::operator=(BigDec&& num2){
-    if (num != nullptr){
-        delete[]num;
-        num = num2.num;
-        length = num2.length;
-        num2.num = nullptr;
-    }
-    return *this;
+BigDec::~BigDec(){
+    delete[]num;
 }
 
 const BigDec BigDec::enlarge(const int &length)const{
@@ -202,12 +156,19 @@ void BigDec::overflow(bool flag){
 
 void BigDec::correction(char *a){
     int no_need = 0;
+    cout<<"Correction"<<endl;
     for (int i = 1; i <= length; ++i){ //count useless 0
-        if (num[i] != 0){
+        if (a[i] != 0){
             break;
         }
         ++no_need;
     }
+    cout<<"a: ";
+    for (int i = 0; i <= length; ++i){
+        cout<<static_cast<unsigned int>(a[i]);
+    }
+
+    cout<<endl<<"noneed: "<<no_need<<endl;
     if (no_need == length){ //all 0
         no_need = length - 1;
         a[0] = 0;
@@ -224,15 +185,16 @@ void BigDec::correction(char *a){
     }
     delete[]a;
     delete[]num;
-    length = length - no_need + 1;
+    length = length - no_need;
     num = tmp;
 }
 
 char* BigDec::operator ~()const{
-    char * place = new char [static_cast<size_t>(this->length + 1)];
+    char * place = new char [static_cast<size_t>(length + 1)];
     if (num[0] == 0){ //positive number
         for (int i = 0; i <= length; ++i)
             place[i] = num[i];
+        //place[length + 1] = '\0';
         return place;
     }
 
@@ -252,28 +214,54 @@ char* BigDec::operator ~()const{
     if (flag){ // negative zero change to zero
         place[0] = 0;
     }
+    //place[length + 1] = '\0';
     return place;
 }
 
-BigDec& BigDec::operator +(const BigDec &num2)const{
+std::ostream& operator <<(std::ostream& out, const BigDec& a){
+    if (a.num[0] == 1 && !(a.length == 1 && a.num[1] == 0)){ //if '-' and not zero
+        out <<'-';
+    }
+
+    for (int i = 1; i <= a.length; ++i){
+        out<<static_cast<unsigned int>(a.num[i]);
+    }
+    return out << dec;
+}
+
+std::istream& operator >>(std::istream& in, BigDec& a){
+    string input;
+    getline(in, input);
+    char* name;
+    name = new char[input.length() + 1];
+    strcpy(name, input.c_str());
+
+    BigDec num(name); //check of string in constructor
+    a = num;
+    delete[] name;
+    input.clear();
+    return in;
+}
+
+BigDec operator +(const BigDec &num1, const BigDec &num2){
     char *a, *b;
     int length;
 
-    if (this->length > num2.length){ //get complements with same length
-        length = this->length;
-        a = ~(*this);
+    if (num1.length > num2.length){ //get complements with same length
+        length = num1.length;
+        a = ~(num1);
         BigDec tmp;
         tmp = num2.enlarge(length);
         b = ~tmp;
     }else{
         b = ~num2;
         length = num2.length;
-        if (this->length < num2.length){
+        if (num1.length < num2.length){
             BigDec tmp;
-            tmp = this->enlarge(length);
+            tmp = num1.enlarge(length);
             a = ~tmp;
         }else{
-            a = ~(*this);
+            a = ~(num1);
         }
     }
 
@@ -301,9 +289,9 @@ BigDec& BigDec::operator +(const BigDec &num2)const{
         }
     }
 
-    BigDec *ans = new BigDec;
-    ans->length = length;
-    ans->num = a;
+    BigDec ans;
+    ans.length = length;
+    ans.num = a;
     if (a[0] == 3){ //two negative numbers which sum don't get overflow
         bool flag = true;
         for (int i = 1; i <= length; ++i){
@@ -313,8 +301,8 @@ BigDec& BigDec::operator +(const BigDec &num2)const{
             }
         }
         if (flag){ //all 0 and 1 to next bit
-            ans->overflow(false);
-            return *ans;
+            ans.overflow(false);
+            return ans;
         }
         a[0] = 1;
     }
@@ -322,66 +310,92 @@ BigDec& BigDec::operator +(const BigDec &num2)const{
         a[0] = 0;
 
     if (a[0] == 1 && overflow == 1){ //positive overflow
-        ans->overflow(true);
+        ans.overflow(true);
     }else{
         if (a[0] == 0 && overflow == 2){ //negative overflow
-            ans->overflow(false);
+            ans.overflow(false);
         }else{ //normal
-            a = ~(*ans);
-            ans->correction(a);
+            a = ~(ans);
+            ans.correction(a);
         }
     }
 
-    return *ans;
+    return ans;
 }
 
-BigDec& BigDec::operator -(const BigDec &num2)const{
-    return *this + (-num2);
+BigDec operator -(const BigDec &num1, const BigDec &num2){
+    return num1 + (-num2);
 }
 
 const BigDec BigDec::operator - () const {
         BigDec res(*this);
         res.num[0] = num[0] == 0 ? 1 : 0;
         return res;
-    }
-
-BigDec& BigDec::great10(){
-    BigDec *ans = new BigDec;
-
-    if (this->length == 1 && this->num[1] == 0){ //zero
-        ans->length = 1;
-        ans->num = new char[2];
-        ans->num[0] = ans->num[1] = 0;
-        return *ans;
-    }
-
-    ans->length = length + 1;
-    ans->num = new char[static_cast<size_t>(length + 2)];
-    ans->num[0] = num[0];
-    for (int i = 1; i <= length; ++i)
-        ans->num[i] = num[i];
-    ans->num[ans->length] = 0;
-    return *ans;
 }
 
-BigDec& BigDec::less10(){ //don't care about the least bit
-    BigDec *ans = new BigDec;
-
-    if (this->length == 1 && this->num[1] == 0){ //zero
-        ans->length = 1;
-        ans->num = new char[2];
-        ans->num[0] = ans->num[1] = 0;
-        return *ans;
+BigDec& BigDec::operator =(const BigDec &num2){
+    if(num != num2.num){
+        if (num != nullptr){
+            delete[]num;
+        }
+        length = num2.length;
+        num = new char [static_cast<size_t>(length + 1)];
+        for (int i = 0; i <= length; ++i){
+            num[i] = num2.num[i];
+        }
     }
-
-    ans->length = length - 1;
-    ans->num = new char[static_cast<size_t>(length)];
-    ans->num[0] = num[0];
-    for (int i = 1; i <= ans->length; ++i)
-        ans->num[i] = num[i];
-    return *ans;
+    return *this;
 }
 
-BigDec::~BigDec(){
-    delete[]num;
+BigDec& BigDec::operator=(BigDec&& num2){
+    if (num != nullptr){
+        delete[]num;
+        num = num2.num;
+        length = num2.length;
+        num2.num = nullptr;
+    }
+    return *this;
 }
+
+int BigDec::operator[](int i){
+    if (i < 0 || i > length){
+        throw logic_error("Array index out of bounds");
+    }
+    return static_cast<int>(num[i]);
+}
+
+
+BigDec BigDec::operator<<(const int i){
+    if (i < 0) throw invalid_argument("Negative shift argument");
+    if (i == 0 || (this->length == 1 && this->num[1] == 0)) return *this;
+
+    BigDec ans;
+    ans.length = length + i;
+    ans.num = new char[static_cast<size_t>(length + i + 1)];
+    ans.num[0] = num[0];
+    for (int i = 1; i <= length; ++i){
+        ans.num[i] = num[i];
+    }
+    for (int i = length + 1; i <= ans.length; ++i){
+        ans.num[i] = 0;
+    }
+    return ans;
+}
+
+BigDec BigDec::operator>>(const int i){
+    if (i < 0) throw invalid_argument("Negative shift argument");
+    if (i == 0 || (this->length == 1 && this->num[1] == 0)) return *this;
+
+    BigDec ans;
+    if (i >= length) return ans;
+    ans.length = length - i;
+    ans.num = new char[static_cast<size_t>(ans.length + 1)];
+    ans.num[0] = num[0];
+    for (int i = 1; i <= ans.length; ++i)
+        ans.num[i] = num[i];
+    return ans;
+}
+
+//char * BigDec::to_string(){
+
+//}

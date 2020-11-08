@@ -4,7 +4,7 @@
 
 using namespace std;
 
-const int N = 47;
+const int N = 5;
 
 class BigDec
 {
@@ -20,10 +20,10 @@ public:
     ~BigDec(); //default
     ostream& print(ostream &out); //cout of BigDec
     istream& input(istream &in); //cin of BigDec | check of string in constructor
-    BigDec& add(const BigDec &num2);
-    BigDec& sub(const BigDec &num2);
-    BigDec& great10(); //bitwise shift to the left
-    BigDec& less10(); //bitwise shift to the right | don't care about the least bit
+    BigDec add(const BigDec &num2);
+    BigDec sub(const BigDec &num2);
+    const BigDec great10(); //bitwise shift to the left
+    const BigDec less10(); //bitwise shift to the right | don't care about the least bit
 
 };
 

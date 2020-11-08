@@ -91,8 +91,8 @@ ostream& BigDec::print(ostream &out){
 }
 
 istream& BigDec::input(istream &in){
-    char name[N + 1];
-        in.getline(name, N + 1);
+    char name[N + 2];
+        in.getline(name, N + 2);
         if (in.fail()) {
              in.clear();
              in.ignore(32767, '\n');
@@ -128,7 +128,7 @@ void BigDec::getComplement(const char num[N], const int &length, char place[N]){
         place[0] = 0;
 }
 
-BigDec& BigDec::add(const BigDec &num2){
+BigDec BigDec::add(const BigDec &num2){
     char a[N + 1], b[N + 1];
     getComplement(this->num, this->length, a);
     getComplement(num2.num, num2.length, b);
@@ -166,38 +166,38 @@ BigDec& BigDec::add(const BigDec &num2){
     if (a[0] == 0 && overflow == 2)
         throw logic_error("Negative Overflow");
     getComplement(a, this->length, a);
-    BigDec *ans = new BigDec;
+    BigDec ans;
     for (int i = 0; i <= length; ++i){
-        ans->num[i] = a[i];
+        ans.num[i] = a[i];
     }
-    return *ans;
+    return ans;
 }
 
-BigDec& BigDec::sub(const BigDec &num2){
+BigDec BigDec::sub(const BigDec &num2){
     BigDec ans = num2;
     ans.changeSign(); //just change sign of second number and add it to first
     return add(ans);
 }
 
-BigDec& BigDec::great10(){
+const BigDec BigDec::great10(){
     if (num[1] != 0) //lost of the greatest bit
         throw logic_error("Number Overflow");
 
-    BigDec *ans = new BigDec;
-    ans->num[0] = num[0];
+    BigDec ans;
+    ans.num[0] = num[0];
     for (int i = 1; i < length; ++i)
-        ans->num[i] = num[i + 1];
-    ans->num[length] = 0;
-    return *ans;
+        ans.num[i] = num[i + 1];
+    ans.num[length] = 0;
+    return ans;
 }
 
-BigDec& BigDec::less10(){ //don't care about the least bit
-    BigDec *ans = new BigDec;
-    ans->num[0] = num[0];
+const BigDec BigDec::less10(){ //don't care about the least bit
+    BigDec ans;
+    ans.num[0] = num[0];
     for (int i = length; i > 1; --i)
-        ans->num[i] = num[i - 1];
-    ans->num[1] = 0;
-    return *ans;
+        ans.num[i] = num[i - 1];
+    ans.num[1] = 0;
+    return ans;
 }
 
 BigDec::~BigDec() = default;
