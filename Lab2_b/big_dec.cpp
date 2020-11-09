@@ -167,10 +167,13 @@ BigDec operator +(const BigDec &num1, const BigDec &num2){
     for (int i = 0; i <= num1.length; ++i){
         ans.num[i] = a[i];
     }
+    delete[]a;
     a = ~(ans);
     for (int i = 0; i <= num1.length; ++i){
         ans.num[i] = a[i];
     }
+    delete[]a;
+    delete[]b;
     return ans;
 }
 
