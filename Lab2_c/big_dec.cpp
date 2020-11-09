@@ -126,7 +126,7 @@ BigDec::~BigDec(){
 
 const BigDec BigDec::enlarge(const int &length)const{
     BigDec ans;
-    delete[]num;
+    delete[]ans.num;
     ans.length = length;
     ans.num = new char[static_cast<size_t>(length + 1)];
     ans.num[0] = this->num[0];

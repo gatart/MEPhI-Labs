@@ -33,6 +33,7 @@ int main()
     cout <<"Enter 2 number: ";
     cin >> b;
     c = a - b;
+    //cout <<"Some shit happend"<<endl;
     cout <<a <<endl<<b<<endl;
     cout<<"Output: " <<c <<endl;
 
@@ -79,7 +80,7 @@ int main()
     cout <<"Enter index: ";
     cin >>j;
     o = a.to_string();
-    cout <<"Output: " <<a[j] <<endl <<"Output: "<<a.to_string();
+    cout <<"Output: " <<a[j] <<endl <<"Output: "<<o;
     delete[]o;
     return 0;
 }

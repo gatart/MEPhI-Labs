@@ -79,30 +79,64 @@ TEST(BigDecMetods, ChangeSign){
 }
 
 TEST(BigDecMetods, AssigmentOperator){
-
+    BigDec a;
+    BigDec b(30);
+    a = b;
+    ASSERT_EQ(a, 30);
+    ASSERT_EQ(b, 30);
 }
-/*
-TEST(BigDecMetods, MoveAssigmentOperator){
 
+TEST(BigDecMetods, MoveAssigmentOperator){
+    BigDec a = BigDec(10);
+    ASSERT_EQ(a, 10);
 }
 
 TEST(BigDecMetods, ReturnDigitOperator){
-
+    BigDec a(-1234567);
+    ASSERT_EQ(a[4], 4);
+    ASSERT_EQ(a[0], 1);
+    a = 7654321;
+    ASSERT_ANY_THROW(a[-1]);
+    ASSERT_ANY_THROW(a[8]);
 }
 
 TEST(BigDecMetods, RightShift){
-
+    BigDec a(12345);
+    ASSERT_EQ(a >> 3, 12);
+    ASSERT_EQ(a >> 30, 0);
+    ASSERT_EQ(a >> 0, 12345);
+    ASSERT_ANY_THROW(a >> -1);
+    a = 0l;
+    ASSERT_EQ(a >> 1, 0);
 }
 
 TEST(BigDecMetods, LeftShift){
-
+    BigDec a(12345);
+    ASSERT_EQ(a << 3, 12345000);
+    ASSERT_EQ(a << 0, 12345);
+    ASSERT_ANY_THROW(a >> -1);
+    a = 0l;
+    ASSERT_EQ(a << 40, 0);
 }
 
 TEST(BigDecMetods, ToString){
-
+    BigDec a(-23456);
+    string test = string(a.to_string());
+    ASSERT_EQ(test, "-23456\0");
+    test = string((-a).to_string());
+    ASSERT_EQ(test, "+23456\0");
 }
-
+/*
 TEST(BigDecMetods, Comparisons){
-
+    BigDec a(123);
+    ASSERT_TRUE(a == 123);
+    ASSERT_FALSE(a == 0l);
+    ASSERT_TRUE(a > 12);
+    ASSERT_FALSE(a > 1234);
+    ASSERT_FALSE(a > 123);
+    ASSERT_TRUE(a < 12345);
+    ASSERT_FALSE(a < 123);
+    ASSERT_FALSE(a < -123);
+    ASSERT_TRUE()
 }
 */
