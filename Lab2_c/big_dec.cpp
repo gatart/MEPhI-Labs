@@ -126,6 +126,7 @@ BigDec::~BigDec(){
 
 const BigDec BigDec::enlarge(const int &length)const{
     BigDec ans;
+    delete[]num;
     ans.length = length;
     ans.num = new char[static_cast<size_t>(length + 1)];
     ans.num[0] = this->num[0];
@@ -318,6 +319,7 @@ BigDec operator +(const BigDec &num1, const BigDec &num2){
 
     delete[]b;
     BigDec ans;
+    delete[]ans.num;
     ans.length = length;
     ans.num = a;
     if (a[0] == 3){ //two negative numbers which sum don't get overflow
@@ -400,6 +402,7 @@ BigDec BigDec::operator<<(const int i)const{
     if (i == 0 || (this->length == 1 && this->num[1] == 0)) return *this;
 
     BigDec ans;
+    delete[]ans.num;
     ans.length = length + i;
     ans.num = new char[static_cast<size_t>(length + i + 1)];
     ans.num[0] = num[0];
