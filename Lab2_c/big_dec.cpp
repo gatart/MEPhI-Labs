@@ -156,19 +156,13 @@ void BigDec::overflow(bool flag){
 
 void BigDec::correction(char *a){
     int no_need = 0;
-    cout<<"Correction"<<endl;
     for (int i = 1; i <= length; ++i){ //count useless 0
         if (a[i] != 0){
             break;
         }
         ++no_need;
     }
-    cout<<"a: ";
-    for (int i = 0; i <= length; ++i){
-        cout<<static_cast<unsigned int>(a[i]);
-    }
 
-    cout<<endl<<"noneed: "<<no_need<<endl;
     if (no_need == length){ //all 0
         no_need = length - 1;
         a[0] = 0;
@@ -187,6 +181,35 @@ void BigDec::correction(char *a){
     delete[]num;
     length = length - no_need;
     num = tmp;
+}
+
+int BigDec::comparison(const BigDec &num2) const{
+    int sign = static_cast<int>(this->num[0] + num2.num[0]);
+    int len = length - num2.length;
+
+    if (sign != 1){
+        if ((len > 0 && sign == 0) || (len < 0 && sign == 2)){
+            return 1;
+        }else if ((len < 0 && sign == 0) || (len > 0 && sign == 2)){
+            return -1;
+        }
+    }else{ //different signs
+        if (num[0] > num2.num[0]){
+            return -1;
+        }else return 1;
+    }
+
+    for (int i = 1, len = 0; i <= length; ++i){
+        len = static_cast<int>(this->num[i] - num2.num[i]);
+        if(len != 0){
+            break;
+        }
+    }
+    if ((len > 0 && sign == 0) || (len < 0 && sign == 2)){
+        return 1;
+    }else if (len == 0){
+        return 0;
+    }else return -1;
 }
 
 char* BigDec::operator ~()const{
@@ -364,8 +387,7 @@ int BigDec::operator[](int i){
     return static_cast<int>(num[i]);
 }
 
-
-BigDec BigDec::operator<<(const int i){
+BigDec BigDec::operator<<(const int i)const{
     if (i < 0) throw invalid_argument("Negative shift argument");
     if (i == 0 || (this->length == 1 && this->num[1] == 0)) return *this;
 
@@ -382,7 +404,7 @@ BigDec BigDec::operator<<(const int i){
     return ans;
 }
 
-BigDec BigDec::operator>>(const int i){
+BigDec BigDec::operator>>(const int i)const{
     if (i < 0) throw invalid_argument("Negative shift argument");
     if (i == 0 || (this->length == 1 && this->num[1] == 0)) return *this;
 
@@ -396,6 +418,51 @@ BigDec BigDec::operator>>(const int i){
     return ans;
 }
 
-//char * BigDec::to_string(){
+char* BigDec::to_string() const{
+    char* ans = new char[static_cast<size_t>(length + 2)];
 
-//}
+    if (num[0] == 1){
+        ans[0] = '-';
+    }else{
+        ans[0] = '+';
+    }
+
+    for (int i = 1; i <= length; ++i){
+        ans[i] = num[i] + '0';
+    }
+    ans[length + 2] = '\0';
+    return ans;
+}
+
+bool operator>(const BigDec& num1, const BigDec& num2){
+    if (num1.comparison(num2) > 0){
+        return true;
+    }
+    return false;
+}
+
+bool operator<(const BigDec& num1, const BigDec& num2){
+    if (num1.comparison(num2) < 0){
+        return true;
+    }
+    return false;
+}
+
+bool operator>=(const BigDec& num1, const BigDec& num2){
+    return !(num1 < num2);
+}
+
+bool operator<=(const BigDec& num1, const BigDec& num2){
+    return !(num1 > num2);
+}
+
+bool operator==(const BigDec& num1, const BigDec& num2){
+    if (num1.comparison(num2) == 0){
+        return true;
+    }
+    return false;
+}
+
+bool operator!=(const BigDec& num1, const BigDec& num2){
+    return !(num1 == num2);
+}

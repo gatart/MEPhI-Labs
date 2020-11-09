@@ -11,6 +11,13 @@ int main()
     cout <<"Long constructor: "<< k<<endl;
 
     BigDec a, b, c;
+
+    cout <<"<" << endl<<"Enter 1 number: ";
+    cin >> a;
+    cout<<"Enter 2 number: ";
+    cin >> b;
+    cout <<(a < b)<<endl;
+
     cin >> a;
     cout <<-a<<endl;
     cout <<"Add" << endl<<"Enter 1 number: ";
@@ -29,14 +36,23 @@ int main()
     cout <<a <<endl<<b<<endl;
     cout<<"Output: " <<c <<endl;
 
-    cout <<"*=10" <<endl <<"Enter number: ";
+    cout <<"<<" <<endl <<"Enter number: ";
     cin >> c;
-    a = c << 0;
+    cout <<"Enter shift: ";
+    int j;
+    cin >> j;
+    cin.clear();
+    cin.ignore(32767, '\n');
+    a = c << j;
     cout<<"Output: " <<a <<endl;
 
-    cout <<"/=10" <<endl <<"Enter number: ";
+    cout <<">>" <<endl <<"Enter number: ";
     cin >> c;
-    a = c >> -1;
+    cout <<"Enter shift: ";
+    cin >> j;
+    cin.clear();
+    cin.ignore(32767, '\n');
+    a = c >> j;
     cout<<"Output: " <<a <<endl;
 
     cout <<"Add" << endl<<"Enter number: ";
@@ -57,10 +73,10 @@ int main()
     cout <<a <<endl;
     cout <<"Output: " <<c <<endl;
 
-    cout <<"Index" << endl<<"Enter number: ";
+    cout <<"Index and to string" << endl<<"Enter number: ";
     cin >> a;
-    int j;
+    cout <<"Enter index: ";
     cin >>j;
-    cout <<"Output: " <<a[j] <<endl;
+    cout <<"Output: " <<a[j] <<endl <<"Output: "<<a.to_string();
     return 0;
 }
