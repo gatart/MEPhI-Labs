@@ -12,11 +12,11 @@ int main()
 
     BigDec a, b, c;
 
-    cout <<"<" << endl<<"Enter 1 number: ";
+    cout <<">" << endl<<"Enter 1 number: ";
     cin >> a;
     cout<<"Enter 2 number: ";
     cin >> b;
-    cout <<(a < b)<<endl;
+    cout <<(a > b)<<endl;
 
     cin >> a;
     cout <<-a<<endl;

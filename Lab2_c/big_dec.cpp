@@ -430,7 +430,7 @@ char* BigDec::to_string() const{
     for (int i = 1; i <= length; ++i){
         ans[i] = num[i] + '0';
     }
-    ans[length + 2] = '\0';
+    ans[length + 1] = '\0';
     return ans;
 }
 
