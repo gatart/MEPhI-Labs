@@ -381,10 +381,10 @@ BigDec& BigDec::operator =(const BigDec &num2){
 BigDec& BigDec::operator=(BigDec&& num2){
     if (num != nullptr){
         delete[]num;
-        num = num2.num;
-        length = num2.length;
-        num2.num = nullptr;
     }
+    num = num2.num;
+    length = num2.length;
+    num2.num = nullptr;
     return *this;
 }
 
