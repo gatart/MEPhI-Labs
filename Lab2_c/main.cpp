@@ -78,6 +78,8 @@ int main()
     cin >> a;
     cout <<"Enter index: ";
     cin >>j;
+    o = a.to_string();
     cout <<"Output: " <<a[j] <<endl <<"Output: "<<a.to_string();
+    delete[]o;
     return 0;
 }
