@@ -87,8 +87,9 @@ BigDec::BigDec(const char *set){
     }
 
     if (zero){
+        char* tmp = new char[2];
         delete[]num;
-        num = new char[2];
+        num = tmp;
         num[0] = 0;
         num[1] = 0;
         length = 1;
@@ -126,9 +127,10 @@ BigDec::~BigDec(){
 
 const BigDec BigDec::enlarge(const int &length)const{
     BigDec ans;
+    char* tmp = new char[static_cast<size_t>(length + 1)];
     delete[]ans.num;
     ans.length = length;
-    ans.num = new char[static_cast<size_t>(length + 1)];
+    ans.num = tmp;
     ans.num[0] = this->num[0];
 
     for (int i = length, k = this->length; i > 0; --i){
@@ -222,7 +224,6 @@ char* BigDec::operator ~()const{
     if (num[0] == 0){ //positive number
         for (int i = 0; i <= length; ++i)
             place[i] = num[i];
-        //place[length + 1] = '\0';
         return place;
     }
 
@@ -242,7 +243,6 @@ char* BigDec::operator ~()const{
     if (flag){ // negative zero change to zero
         place[0] = 0;
     }
-    //place[length + 1] = '\0';
     return place;
 }
 
@@ -260,8 +260,7 @@ std::ostream& operator <<(std::ostream& out, const BigDec& a){
 std::istream& operator >>(std::istream& in, BigDec& a){
     string input;
     getline(in, input);
-    char* name;
-    name = new char[input.length() + 1];
+    char* name = new char[input.length() + 1];
     strcpy(name, input.c_str());
 
     BigDec num(name); //check of string in constructor
@@ -368,11 +367,12 @@ const BigDec BigDec::operator - () const {
 
 BigDec& BigDec::operator =(const BigDec &num2){
     if(num != num2.num){
+        length = num2.length;
+        char* tmp = new char [static_cast<size_t>(length + 1)];
         if (num != nullptr){
             delete[]num;
         }
-        length = num2.length;
-        num = new char [static_cast<size_t>(length + 1)];
+        num = tmp;
         for (int i = 0; i <= length; ++i){
             num[i] = num2.num[i];
         }
@@ -402,9 +402,10 @@ BigDec BigDec::operator<<(const int i)const{
     if (i == 0 || (this->length == 1 && this->num[1] == 0)) return *this;
 
     BigDec ans;
+    char* tmp = new char[static_cast<size_t>(length + i + 1)];
     delete[]ans.num;
     ans.length = length + i;
-    ans.num = new char[static_cast<size_t>(length + i + 1)];
+    ans.num = tmp;
     ans.num[0] = num[0];
     for (int i = 1; i <= length; ++i){
         ans.num[i] = num[i];
@@ -422,7 +423,9 @@ BigDec BigDec::operator>>(const int i)const{
     BigDec ans;
     if (i >= length) return ans;
     ans.length = length - i;
-    ans.num = new char[static_cast<size_t>(ans.length + 1)];
+    char* tmp = new char[static_cast<size_t>(ans.length + 1)];
+    delete[]ans.num;
+    ans.num = tmp;
     ans.num[0] = num[0];
     for (int i = 1; i <= ans.length; ++i)
         ans.num[i] = num[i];

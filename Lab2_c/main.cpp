@@ -33,7 +33,6 @@ int main()
     cout <<"Enter 2 number: ";
     cin >> b;
     c = a - b;
-    //cout <<"Some shit happend"<<endl;
     cout <<a <<endl<<b<<endl;
     cout<<"Output: " <<c <<endl;
 

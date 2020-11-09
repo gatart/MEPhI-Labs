@@ -27,7 +27,7 @@ private:
 public:
     /// initialization constructor by long int (also default)
     BigDec(const long int set = 0);
-    /// initialization constructor by int (also default)
+    /// initialization constructor by string
     BigDec(const char* set);
     /// copy constructor
     BigDec(const BigDec &a);
@@ -44,10 +44,10 @@ public:
     /// input of a number
     friend std::istream& operator >>(std::istream& in, BigDec& a);
 
-    /// addition (also work with int, long int, char* or string.c_str())
+    /// addition (also work with long int, char* or string.c_str())
     friend BigDec operator +(const BigDec &num1, const BigDec &num2);
 
-    /// subtraction (also work with int, long int, char* or string.c_str())
+    /// subtraction (also work with long int, char* or string.c_str())
     friend BigDec operator -(const BigDec &num1, const BigDec &num2);
 
     /// changeSign
@@ -71,7 +71,7 @@ public:
     ///convert BigDec to char* with signs '0' to '9' with '-' or '+'
     char* to_string()const;
 
-    ///comparison operators (true or false)
+    ///comparison operators (true or false) | also work with long int, char* or string.c_str()
     friend bool operator>(const BigDec& num1, const BigDec& num2);
     friend bool operator<(const BigDec& num1, const BigDec& num2);
     friend bool operator>=(const BigDec& num1, const BigDec& num2);
