@@ -27,7 +27,7 @@ private:
 public:
     /// initialization constructor by long int (also default)
     BigDec(const long int set = 0);
-    /// initialization constructor by string
+    /// initialization constructor by int (also default)
     BigDec(const char* set);
     /// copy constructor
     BigDec(const BigDec &a);

@@ -150,6 +150,9 @@ void BigDec::overflow(bool flag){
     char* a;
     a = ~(*this);
     this->num = a;
+    if(!flag){
+        this->num[0] = 1;
+    }
     *this = this->enlarge(this->length + 1);
     this->num[1] = 1;
 }
@@ -352,6 +355,9 @@ BigDec operator -(const BigDec &num1, const BigDec &num2){
 
 const BigDec BigDec::operator - () const {
         BigDec res(*this);
+        if (length == 1 && num[1] == 0){ // zero
+            return *this;
+        }
         res.num[0] = num[0] == 0 ? 1 : 0;
         return res;
 }
