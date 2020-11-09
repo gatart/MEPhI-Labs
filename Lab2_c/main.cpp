@@ -65,6 +65,7 @@ int main()
     c = a + o;
     cout <<a <<endl;
     cout <<"Output: " <<c <<endl;
+    delete[]o;
 
     cout <<"Add" << endl<<"Enter number: ";
     cin >> a;

@@ -149,6 +149,7 @@ void BigDec::overflow(bool flag){
 
     char* a;
     a = ~(*this);
+    delete[]this->num;
     this->num = a;
     if(!flag){
         this->num[0] = 1;
@@ -315,6 +316,7 @@ BigDec operator +(const BigDec &num1, const BigDec &num2){
         }
     }
 
+    delete[]b;
     BigDec ans;
     ans.length = length;
     ans.num = a;
