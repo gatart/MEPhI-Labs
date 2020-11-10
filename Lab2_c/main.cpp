@@ -2,7 +2,7 @@
 #include "big_dec.h"
 
 using namespace std;
-
+using namespace bigdec;
 
 int main()
 {
