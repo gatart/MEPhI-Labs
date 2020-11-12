@@ -2,10 +2,10 @@
 
 #include <gtest/gtest.h>
 #include <gmock/gmock-matchers.h>
-#include "../Lab2_c/big_dec.h"
-#include "../Lab2_c/big_dec.cpp"
+#include "big_dec.h"
 
 using namespace testing;
+using namespace bigdec;
 
 TEST(BigDecConstructor, DefaultConstructor){
     BigDec a;
@@ -126,7 +126,7 @@ TEST(BigDecMetods, ToString){
     test = string((-a).to_string());
     ASSERT_EQ(test, "+23456\0");
 }
-/*
+
 TEST(BigDecMetods, Comparisons){
     BigDec a(123);
     ASSERT_TRUE(a == 123);
@@ -137,6 +137,17 @@ TEST(BigDecMetods, Comparisons){
     ASSERT_TRUE(a < 12345);
     ASSERT_FALSE(a < 123);
     ASSERT_FALSE(a < -123);
-    ASSERT_TRUE()
+
+    ASSERT_TRUE(a >= 12);
+    ASSERT_TRUE(a >= 123);
+    ASSERT_FALSE(a >= 12345);
+    ASSERT_TRUE(a <= 12345);
+    ASSERT_TRUE(a <= 123);
+    ASSERT_FALSE(a <= 12);
+    ASSERT_TRUE(a != 12);
+    ASSERT_FALSE(a != 123);
 }
-*/
+
+TEST(IOMetods, Input){
+
+}

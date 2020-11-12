@@ -5,7 +5,8 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG += thread
 CONFIG -= qt
-INCLUDEPATH += C:\Qt\Projects\Lab2_с
+INCLUDEPATH += C:\Qt\Projects\Lab2_c
+LIBS += -L C:\Qt\Projects\Lab2_c -lbigdec
 
 HEADERS += \
         tst_test_bigdec.h \
