@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock-matchers.h>
 #include "big_dec.h"
+#include <sstream>
 
 using namespace testing;
 using namespace bigdec;
@@ -32,12 +33,14 @@ TEST(BigDecConstructor, StringConstructor){
     ASSERT_THROW(BigDec d (test), invalid_argument);
     ASSERT_THROW(BigDec(""), invalid_argument);
     ASSERT_THROW(BigDec("jdfhksdj"), invalid_argument);
+    ASSERT_THROW(BigDec("-jdfhksdj"), invalid_argument);
 }
 
 TEST(BigDecConstructor, CopyConstructor){
     BigDec a(12345);
     BigDec b(a);
     ASSERT_EQ(b, 12345);
+    ASSERT_EQ(a, 12345);
 }
 
 TEST(BigDecConstructor, MoveConstructor){
@@ -96,6 +99,7 @@ TEST(BigDecMetods, ReturnDigitOperator){
     ASSERT_EQ(a[4], 4);
     ASSERT_EQ(a[0], 1);
     a = 7654321;
+    ASSERT_EQ(a[0], 0);
     ASSERT_ANY_THROW(a[-1]);
     ASSERT_ANY_THROW(a[8]);
 }
@@ -114,7 +118,7 @@ TEST(BigDecMetods, LeftShift){
     BigDec a(12345);
     ASSERT_EQ(a << 3, 12345000);
     ASSERT_EQ(a << 0, 12345);
-    ASSERT_ANY_THROW(a >> -1);
+    ASSERT_ANY_THROW(a << -1);
     a = 0l;
     ASSERT_EQ(a << 40, 0);
 }
@@ -149,5 +153,25 @@ TEST(BigDecMetods, Comparisons){
 }
 
 TEST(IOMetods, Input){
+    stringstream ss;
+    ss <<"12345\n";
+    BigDec a;
+    ss >> a;
+    ASSERT_EQ(a, 12345);
+    ss <<"-12345\n";
+    ss >> a;
+    ASSERT_EQ(a, -12345);
+    ASSERT_ANY_THROW(ss <<"\n"; ss >>a);
+    ASSERT_ANY_THROW(ss <<"-bhjdsfjbsju\n"; ss >> a);
+}
 
+TEST(IOMetods, Output){
+    stringstream ss;
+    BigDec a(12345);
+    ss << a;
+    ASSERT_EQ(ss.str(), "12345");
+    ss.str(string());
+    a = -12345;
+    ss << a;
+    ASSERT_EQ(ss.str(), "-12345");
 }
