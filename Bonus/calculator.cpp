@@ -40,38 +40,63 @@ Calculator::~Calculator()
 }
 
 void Calculator::digits_numbers(){
-    QPushButton *button = static_cast<QPushButton *>(sender());
-    QString number = ui->workspace->text();
-    if (number == "Ans"){
-        return;
+    try {
+        QPushButton *button = static_cast<QPushButton *>(sender());
+        QString number = ui->workspace->text();
+        if (number == "Ans"){
+            return;
+        }
+        if (number == "0"){
+            number = "";
+        }
+        number = number + button->text();
+        ui->workspace->setText(number);
+    }catch(bad_alloc_exception){
+        QMessageBox::critical(this, "Bad allocation!", "There is not enough memory for Calculator work.");
+        qApp->quit();
+    }catch(...){
+        QMessageBox::critical(this, "Unknown error!", "An unknown error occurred. The calculator will be closed");
+        qApp->quit();
     }
-    if (number == "0"){
-        number = "";
-    }
-    number = number + button->text();
-    ui->workspace->setText(number);
 }
 
 void Calculator::sign_change(){
-    QString number = ui->workspace->text();
-    if (number == "0"){
-        return;
+    try {
+        QString number = ui->workspace->text();
+        if (number == "0"){
+            return;
+        }
+        if (number[0] == '-'){
+            number.replace(0, 1, "");
+        }else{
+            number = "-" + ui->workspace->text();
+        }
+        ui->workspace->setText(number);
+    }catch(bad_alloc_exception){
+        QMessageBox::critical(this, "Bad allocation!", "There is not enough memory for Calculator work.");
+        qApp->quit();
+    }catch(...){
+        QMessageBox::critical(this, "Unknown error!", "An unknown error occurred. The calculator will be closed");
+        qApp->quit();
     }
-    if (number[0] == '-'){
-        number.replace(0, 1, "");
-    }else{
-        number = "-" + ui->workspace->text();
-    }
-    ui->workspace->setText(number);
+
 }
 
 void Calculator::set_action(){
-    QPushButton *button = static_cast<QPushButton *>(sender());
-    if (ui->last->text() == ""){
-        ui->last->setText(ui->workspace->text());
-        ui->workspace->setText("0");
+    try {
+        QPushButton *button = static_cast<QPushButton *>(sender());
+        if (ui->last->text() == ""){
+            ui->last->setText(ui->workspace->text());
+            ui->workspace->setText("0");
+        }
+        ui->action->setText(button->text());
+    }catch(bad_alloc_exception){
+        QMessageBox::critical(this, "Bad allocation!", "There is not enough memory for Calculator work.");
+        qApp->quit();
+    }catch(...){
+        QMessageBox::critical(this, "Unknown error!", "An unknown error occurred. The calculator will be closed");
+        qApp->quit();
     }
-    ui->action->setText(button->text());
 }
 
 bigint Calculator::negative(){
@@ -86,7 +111,7 @@ bigint Calculator::negative(){
 
 bigint Calculator::operand(const QLabel *tmp){
     if (tmp->text() == "Ans"){
-        return bigint(Ans);
+        return Ans;
     }else if (tmp->text() == "-Ans"){
         return negative();
     }
@@ -105,12 +130,25 @@ void Calculator::calculate(){
     bigint B = operand(ui->workspace);;
 
     //-------------------------------------
-    /*{
+    {
         QString kek = static_cast<QString>(A.to_string());
         QMessageBox::warning(this, "Exception", kek);
         kek = static_cast<QString>(B.to_string());
         QMessageBox::warning(this, "Exception", kek);
-    }*/
+
+        kek = "";
+        for (size_t i = 0; i < strlen(A.to_string()); ++i){
+            kek = kek +" " + QString::number(static_cast<int>(A.to_string()[i]));
+        }
+        QMessageBox::warning(this, "Exception", kek);
+
+        kek = "";
+        for (size_t i = 0; i < strlen(B.to_string()); ++i){
+            kek = kek +" " + QString::number(static_cast<int>(B.to_string()[i]));
+        }
+        QMessageBox::warning(this, "Exception", kek);
+
+    }
     //-------------------------------------------
 
     QString action = ui->action->text();
@@ -132,14 +170,14 @@ void Calculator::calculate(){
         }
     }
     //-------------------------------------
-    /*{
+    {
         QString kek = static_cast<QString>(A.to_string());
         QMessageBox::warning(this, "Exception", kek);
     }
     {
         QString kek = static_cast<QString>(Ans.to_string());
         QMessageBox::warning(this, "Exception", kek);
-    }*/
+    }
     //-------------------------------------------
 
     clear_calc();
@@ -159,9 +197,17 @@ void Calculator::calculate(){
 }
 
 void Calculator::ans(){
-    QString number = ui->workspace->text();
-    if (number == "0"){
-        ui->workspace->setText("Ans");
+    try {
+        QString number = ui->workspace->text();
+        if (number == "0"){
+            ui->workspace->setText("Ans");
+        }
+    }catch(bad_alloc_exception){
+        QMessageBox::critical(this, "Bad allocation!", "There is not enough memory for Calculator work.");
+        qApp->quit();
+    }catch(...){
+        QMessageBox::critical(this, "Unknown error!", "An unknown error occurred. The calculator will be closed");
+        qApp->quit();
     }
 }
 
@@ -173,11 +219,19 @@ void Calculator::clear_calc(){
 }
 
 void Calculator::del(){
-    QString number = ui->workspace->text();
-    if (number == "Ans" || number == "-Ans" || number.length() == 1 || (number[0] == '-' && number.length() == 2)){
-        ui->workspace->setText("0");
-    }else{
-        number.replace(number.length() - 1, 1, "");
-        ui->workspace->setText(number);
+    try {
+        QString number = ui->workspace->text();
+        if (number == "Ans" || number == "-Ans" || number.length() == 1 || (number[0] == '-' && number.length() == 2)){
+            ui->workspace->setText("0");
+        }else{
+            number.replace(number.length() - 1, 1, "");
+            ui->workspace->setText(number);
+        }
+    }catch(bad_alloc_exception){
+        QMessageBox::critical(this, "Bad allocation!", "There is not enough memory for Calculator work.");
+        qApp->quit();
+    }catch(...){
+        QMessageBox::critical(this, "Unknown error!", "An unknown error occurred. The calculator will be closed");
+        qApp->quit();
     }
 }
