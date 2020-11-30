@@ -106,7 +106,7 @@ bigint Calculator::negative(){
     }else{
         tmp = "-" + tmp;
     }
-    return bigint(tmp.toStdString().c_str());
+    return bigint(std::stol(tmp.toStdString().c_str()));
 }
 
 bigint Calculator::operand(const QLabel *tmp){
@@ -115,7 +115,7 @@ bigint Calculator::operand(const QLabel *tmp){
     }else if (tmp->text() == "-Ans"){
         return negative();
     }
-    return bigint ((tmp->text().toStdString().c_str()));
+    return bigint (std::stol(tmp->text().toStdString().c_str()));
 }
 
 void Calculator::calculate(){
@@ -126,11 +126,17 @@ void Calculator::calculate(){
     }
 
     try{
-    bigint A = operand(ui->last);;
-    bigint B = operand(ui->workspace);;
+        bigint A = operand(ui->last);;
+        bigint B = operand(ui->workspace);;
 
+        /*bigint A = "134";
+        bigint B = "21";
+        A = A - B;
+        QString kek = static_cast<QString>(A.to_string());
+        QMessageBox::warning(this, "Exception", kek);
+        */
     //-------------------------------------
-    {
+    /*{
         QString kek = static_cast<QString>(A.to_string());
         QMessageBox::warning(this, "Exception", kek);
         kek = static_cast<QString>(B.to_string());
@@ -148,14 +154,20 @@ void Calculator::calculate(){
         }
         QMessageBox::warning(this, "Exception", kek);
 
-    }
+    }*/
     //-------------------------------------------
 
     QString action = ui->action->text();
     if (action == "+"){
+        QMessageBox::warning(this, "Exception", "тут");
         A = A + B;
+        QString kek = static_cast<QString>(A.to_string());
+        QMessageBox::warning(this, "Exception", kek);
     }else if (action == "-"){
+        QMessageBox::warning(this, "Exception", "тут");
         A = A - B;
+        QString kek = static_cast<QString>(A.to_string());
+        QMessageBox::warning(this, "Exception", kek);
     }else{
         long long second = ui->workspace->text().toLongLong();
         if (second >= 2147483647l){
@@ -170,14 +182,14 @@ void Calculator::calculate(){
         }
     }
     //-------------------------------------
-    {
+    /*{
         QString kek = static_cast<QString>(A.to_string());
         QMessageBox::warning(this, "Exception", kek);
     }
     {
         QString kek = static_cast<QString>(Ans.to_string());
         QMessageBox::warning(this, "Exception", kek);
-    }
+    }*/
     //-------------------------------------------
 
     clear_calc();
