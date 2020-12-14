@@ -1,8 +1,5 @@
 #include "basefile.h"
 
-const TYPE &File::getType(){
-    return _fileType;
-}
 
 void File::chmod(int mod){
     if (mod >= 4){
@@ -18,6 +15,20 @@ void File::chmod(int mod){
 void File::chvol(unsigned int vol){
     _volume = vol;
 }
+
+
+const TYPE &File::getType()const{
+    return _fileType;
+}
+
+const std::string &File::getName()const{
+    return _name;
+}
+
+const std::string &File::getID()const{
+    return _id;
+}
+
 
 int File::getmod(){
     int mod = 0;

@@ -1,7 +1,10 @@
 #ifndef MENU_H
 #define MENU_H
 #include <iostream>
+#include <vector>
+#include <map>
 
+#include "typefiles.h"
 #include "maintable.h"
 
 using std::istream;
@@ -17,15 +20,14 @@ void getNum(T & a){
 class Menu
 {
 private:
-   Table _root;
+   std::map<std::string, File*> _table;
+   std::map<std::string, std::string> _root;
+
    void (Menu::*functionMass[6])() = {&Menu::addFile, &Menu::chmod,
            &Menu::chvol, &Menu::delFile, &Menu::viewInfo, &Menu::exit};
 
-   std::string getID();
+   std::string getName();
    TYPE getType();
-   void addSpecial(const std::string &ID, Table &root);
-   void delSpecial(const std::string &ID, Table &root);
-
 
 public:
    Menu();

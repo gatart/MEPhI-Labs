@@ -4,6 +4,7 @@
 #include <string>
 
 using std::endl;
+using std::map;
 const std::string idCheck = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm";
 
 Menu::Menu(){
@@ -29,20 +30,20 @@ void Menu::mainMenu(){
     }while (ret != 5);
 }
 
-std::string Menu::getID(){
-    std::string ID;
+std::string Menu::getName(){
+    std::string name;
     bool flag;
     do{
         cout <<"Name can consist 24 symbols of a-z and A-Z)"<<endl
              <<"Enter file's name: "<<endl;
-        cin >> ID;
+        cin >> name;
         flag = false;
 
-        if (ID.size() > 24){ //too long
+        if (name.size() > 24){ //too long
             flag = true;
             continue;
         }
-        for (char a : ID){ //
+        for (char a : name){ //
             if (idCheck.find(a) == std::string::npos){
                 flag = true;
                 break;
@@ -50,7 +51,7 @@ std::string Menu::getID(){
         }
     }while(flag);
 
-    return ID;
+    return name;
 }
 
 TYPE getType(){
@@ -76,11 +77,8 @@ TYPE getType(){
 }
 
 void Menu::addFile(){ // !!!!!!!!!!!!!
-    std::string ID = getID();
-
-    //FIND ID IN THE TABLE!!!!!!!!!!!!!!!!
-
     TYPE type = getType();
+    std::string ID = getName();
 
     if (type == TYPE::BYTE || type == TYPE::BLOCK){
 
@@ -122,6 +120,33 @@ void Menu::delFile(){
 }
 
 void Menu::viewInfo(){
+    // output of headers of collums
+
+    map<std::string,File*>::iterator tmp;
+    for (tmp = _table.begin(); tmp != _table.end(); tmp++){
+        printf("%*s\t", 24, ((tmp->second)->getName()).c_str());
+        printf("%*s\t", 24, (tmp->first).c_str());
+
+        int mod = (tmp->second)->getmod();
+        if (mod >= 4){
+            mod -= 4;
+            cout <<"-r";
+        }else cout <<"--";
+        if (mod >= 2){
+            mod -= 2;
+            cout <<"w";
+        }else cout <<"-";
+        if (mod == 1){
+            cout <<"x    ";
+        }else cout <<"-\t\t";
+
+        //output type
+        // output volume
+        // output time (optional)
+
+
+    }
+
     cout <<"Press any key to continue."<<endl;
     _getch();
 }

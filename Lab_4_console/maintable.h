@@ -2,12 +2,10 @@
 #define TABLE_H
 #include <iostream>
 #include <vector>
+#include <map>
 
-#include "basefile.h"
 #include "typefiles.h"
 
-
-class Catalog;
 
 struct TableCell{
     std::string _id;
@@ -17,9 +15,8 @@ struct TableCell{
 
 class Table{
 private:
-    std::vector<TableCell> _data;
-    friend class Catalog;
-    friend class Menu;
+    std::map<std::string, File*> _table;
+    std::map<std::string, std::string> _root;
 
 public:
     Table();

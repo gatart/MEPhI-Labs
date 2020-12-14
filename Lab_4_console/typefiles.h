@@ -1,14 +1,14 @@
 #ifndef CATALOG_H
 #define CATALOG_H
+#include <map>
 
 #include "basefile.h"
-//#include "maintable.h"
 
 class Catalog : public File{
 private:
-    //Table _struct;
+    std::map<std::string, std::string> _dir; // map <Name, ID>
 public:
-    Catalog(const TYPE fileType, const std::string &ID);
+    Catalog(const TYPE fileType, const std::string &ID, const std::string name);
 
     virtual void viewInfo();
     virtual void chmod(int mod);
@@ -17,7 +17,7 @@ public:
 
 
 
-    //void addCatalog(const std::string &ID, Table &table);
+
     void delCatalog(const std::string &ID);
 
 };
@@ -53,11 +53,10 @@ public:
 
 class CommonFile : public File{
 private:
-    struct tm *crtTime;
-    struct tm *modTime;
+    struct tm *_time;
 
 public:
-    CommonFile(const TYPE fileType, const std::string &ID, unsigned int volume);
+    CommonFile(const TYPE fileType, const std::string &ID, unsigned int volume, const std::string name);
     virtual void viewInfo();
     virtual void chmod(int mod);
     virtual void chvol(unsigned int vol);
@@ -69,7 +68,7 @@ class SpecialFile : public File{
 private:
 
 public:
-    SpecialFile(const TYPE fileType, const std::string &ID, unsigned int volume);
+    SpecialFile(const TYPE fileType, const std::string &ID, unsigned int volume, const std::string name);
     virtual void viewInfo();
     virtual ~SpecialFile();
 };
