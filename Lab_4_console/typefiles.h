@@ -2,41 +2,74 @@
 #define CATALOG_H
 
 #include "basefile.h"
-#include "maintable.h"
+//#include "maintable.h"
 
-class Catalog : private File{
+class Catalog : public File{
 private:
-    Table _struct;
+    //Table _struct;
 public:
-    Catalog(const TYPE fileType);
+    Catalog(const TYPE fileType, const std::string &ID);
+
     virtual void viewInfo();
+    virtual void chmod(int mod);
+    virtual void chvol(unsigned int vol);
     virtual ~Catalog();
+
+
+
+    //void addCatalog(const std::string &ID, Table &table);
+    void delCatalog(const std::string &ID);
+
 };
 
 
-class CommonFile : private File{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class CommonFile : public File{
 private:
     struct tm *crtTime;
     struct tm *modTime;
 
 public:
-    CommonFile(const TYPE fileType);
+    CommonFile(const TYPE fileType, const std::string &ID, unsigned int volume);
     virtual void viewInfo();
-    virtual void chmod();
-    virtual void chvol();
+    virtual void chmod(int mod);
+    virtual void chvol(unsigned int vol);
     virtual ~CommonFile();
 };
 
-enum class SPECTYPE{
-    BYTE,
-    BLOCK
-};
 
-class SpecialFile : private File{
+class SpecialFile : public File{
 private:
-    const SPECTYPE _type;
+
 public:
-    SpecialFile(const TYPE fileType, const SPECTYPE type);
+    SpecialFile(const TYPE fileType, const std::string &ID, unsigned int volume);
     virtual void viewInfo();
     virtual ~SpecialFile();
 };

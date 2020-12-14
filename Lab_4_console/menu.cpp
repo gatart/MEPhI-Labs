@@ -57,17 +57,19 @@ TYPE getType(){
     TYPE type;
     int ans;
     do{
-        cout <<"(0 - special file, 1 - catalog, 2 - common file)"
+        cout <<"(0 - catalog, 1 - common file, 2 - byte file, 3 - block file)"
              <<"Choose file's type: ";
         getNum(ans);
-    }while(ans > 2 || ans < 0);
+    }while(ans > 3 || ans < 0);
 
-    if (ans == 0){
-        type = TYPE::SPECIAL;
-    }else if(ans == 1){
+    if(ans == 0){
         type = TYPE::CATALOG;
-    }else{
+    }else if (ans == 1){
         type = TYPE::COMMON;
+    }else if (ans == 2){
+        type = TYPE::BYTE;
+    }else {
+        type = TYPE::BLOCK;
     }
 
     return type;
@@ -80,7 +82,7 @@ void Menu::addFile(){ // !!!!!!!!!!!!!
 
     TYPE type = getType();
 
-    if (type == TYPE::SPECIAL){
+    if (type == TYPE::BYTE || type == TYPE::BLOCK){
 
 
     }else{

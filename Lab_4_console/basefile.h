@@ -9,7 +9,8 @@
 enum class TYPE{
     COMMON,
     CATALOG,
-    SPECIAL
+    BYTE,
+    BLOCK
 };
 
 class File {
@@ -21,18 +22,22 @@ private:
     bool _x;
 
     unsigned int _volume;
-    std::string _name;
     const TYPE _fileType;
-    //const std::string _id;
-    //static std::array<char> ID; реши, как хранить ID
+    const std::string _id;
 
 public:
-    File(const TYPE fileType);
-    virtual void viewInfo();
-    const TYPE &getType();
-    virtual void chmod();
-    virtual void chvol();
+    File(const TYPE fileType, const std::string &ID, unsigned int volume)
+        : _r(true), _w(true), _x(false),_volume(volume), _fileType(fileType), _id(ID){}
+
+    virtual void viewInfo() = 0;
+    virtual void chmod(int mod);
+    virtual void chvol(unsigned int vol);
     virtual ~File();
+
+    const TYPE &getType();
+    int getmod();
+    unsigned int getvol();
+    void setAdress(File* adress);
 };
 
 

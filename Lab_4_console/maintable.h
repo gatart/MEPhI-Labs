@@ -4,9 +4,10 @@
 #include <vector>
 
 #include "basefile.h"
+#include "typefiles.h"
 
 
-class File;
+class Catalog;
 
 struct TableCell{
     std::string _id;
@@ -17,6 +18,9 @@ struct TableCell{
 class Table{
 private:
     std::vector<TableCell> _data;
+    friend class Catalog;
+    friend class Menu;
+
 public:
     Table();
     void newFile(const std::string &ID, const TYPE &type);

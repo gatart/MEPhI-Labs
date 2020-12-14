@@ -1,19 +1,19 @@
 #include "typefiles.h"
 
-Catalog::Catalog(const TYPE fileType)
-    : File(fileType)
+Catalog::Catalog(const TYPE fileType, const std::string &ID)
+    : File(fileType, ID, 0)
 {
 
 }
 
-CommonFile::CommonFile(const TYPE fileType)
-    : File(fileType)
+CommonFile::CommonFile(const TYPE fileType, const std::string &ID, unsigned int volume)
+    : File(fileType, ID, volume)
 {
 
 }
 
-SpecialFile::SpecialFile(const TYPE fileType, const SPECTYPE type)
-    : File(fileType), _type(type)
+SpecialFile::SpecialFile(const TYPE fileType, const std::string &ID, unsigned int volume)
+    : File(fileType, ID, volume)
 {
 
 }

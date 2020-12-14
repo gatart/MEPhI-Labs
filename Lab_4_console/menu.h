@@ -23,7 +23,10 @@ private:
 
    std::string getID();
    TYPE getType();
-   void addSpecial(const std::string &ID);
+   void addSpecial(const std::string &ID, Table &root);
+   void delSpecial(const std::string &ID, Table &root);
+
+
 public:
    Menu();
    void mainMenu();
