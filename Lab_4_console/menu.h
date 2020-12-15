@@ -5,29 +5,47 @@
 #include <map>
 
 #include "typefiles.h"
-#include "maintable.h"
 
 using std::istream;
 using std::cout;
 using std::cin;
+using std::string;
 
 template <class T>
-void getNum(T & a){
-    cin.exceptions(istream::failbit | istream::badbit);
-    cin >>a;
+T getSome(const string &str){
+    bool fl = false;
+    T a;
+    do{
+        cout <<str;
+        try {
+            cin >>a;
+        } catch (...) {
+            fl = true;
+        }
+    }while(fl);
+    return a;
 }
 
 class Menu
 {
 private:
-   std::map<std::string, File*> _table;
-   std::map<std::string, std::string> _root;
+   std::map<string, File*> _table;
+   std::map<string, string> _root;
+   static std::string _id;
 
    void (Menu::*functionMass[6])() = {&Menu::addFile, &Menu::chmod,
            &Menu::chvol, &Menu::delFile, &Menu::viewInfo, &Menu::exit};
 
-   std::string getName();
+   string getName();
    TYPE getType();
+   unsigned int getVol();
+   int getNum();
+   std::map<string, string> &getWay();
+
+   string generateID();
+   void nextID(std::string &ID);
+   void defragment();
+   bool findName(const string &name, std::map<string,string> &table);
 
 public:
    Menu();
@@ -41,5 +59,7 @@ public:
 
    void exit();
 };
+
+string Menu::_id = "aaaaaaaaaaaaaaaaaaaaaaaa"; //a - 24
 
 #endif // MENU_H

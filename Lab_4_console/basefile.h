@@ -4,7 +4,6 @@
 #include <array>
 #include <time.h>
 
-//#include "table.h"
 
 enum class TYPE{
     COMMON,
@@ -42,7 +41,5 @@ public:
     unsigned int getvol();
     void setAdress(File* adress);
 };
-
-
 
 #endif // FILE_H

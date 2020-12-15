@@ -15,11 +15,7 @@ public:
     virtual void chvol(unsigned int vol);
     virtual ~Catalog();
 
-
-
-
-    void delCatalog(const std::string &ID);
-
+    std::map<std::string, std::string> &getDir();
 };
 
 
