@@ -5,11 +5,17 @@ void File::chmod(int mod){
     if (mod >= 4){
         mod -= 4;
         _r = true;
+    }else{
+        _r = false;
     }
     if (mod >= 2){
         mod -= 2;
-        _w = true;}
+        _w = true;
+    }else{
+        _w = false;
+    }
     if (mod == 1) _x = true;
+    else _x = false;
 }
 
 void File::chvol(unsigned int vol){

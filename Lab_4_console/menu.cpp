@@ -5,6 +5,7 @@
 
 using std::endl;
 using std::map;
+using std::string;
 using std::invalid_argument;
 using std::logic_error;
 using std::system_error;
@@ -15,12 +16,13 @@ const string DENIED = "Permission denied";
 const string NOFILE = "No such file(s) with this name(s)";
 const string NODIR = "No such directory(ies) with this name(s)";
 
+string Menu::_ID = "aaaaaaaaaaaaaaaaaaaaaaaa"; //a - 24
+
 
 Menu::Menu(){
-
 }
 
-void Menu::mainMenu(){ //Change or not!!!!!!!!!!!!!!!!!!!!!!!
+void Menu::mainMenu(){
     int ret;
     do{
         do{
@@ -32,23 +34,26 @@ void Menu::mainMenu(){ //Change or not!!!!!!!!!!!!!!!!!!!!!!!
                  <<"[3] Delete file"<<endl
                  <<"[4] Show information about files"<<endl
                  <<"[5] Exit"<<endl;
-            ret = getSome<int>("");
+            ret = getSome<int>(">>>");
         }while(ret < 0 || ret > 5);
         system("cls");
         (this->*functionMass[ret])();
     }while (ret != 5);
 }
 
-string Menu::getName(){
-    std::string name;
+string Menu::setName(){
+    string name;
     bool flag;
     do{
-        cout <<"Name can consist 24 symbols of a-z and A-Z)"<<endl
-             <<"Enter file's name: "<<endl;
-        cin >> name;
+        cout <<"Name can consist 24 symbols of a-z and A-Z)"<<endl;
+        name = getSome<string>("Enter file's name: ");
         flag = false;
 
         if (name.size() > 24){ //too long
+            flag = true;
+            continue;
+        }
+        if (name.empty()){
             flag = true;
             continue;
         }
@@ -63,12 +68,11 @@ string Menu::getName(){
     return name;
 }
 
-TYPE getType(){
+TYPE Menu::setType(){
     TYPE type;
     int ans;
     do{
-        cout <<"(0 - catalog, 1 - common file, 2 - byte file, 3 - block file)"
-             <<"Choose file's type: ";
+        cout <<"(0 - catalog, 1 - common file, 2 - byte file, 3 - block file)"<<endl;
         ans = getSome<int>("Choose file's type: ");
     }while(ans > 3 || ans < 0);
 
@@ -85,14 +89,25 @@ TYPE getType(){
     return type;
 }
 
-unsigned int Menu::getVol(){
+unsigned int Menu::setVol(){
     unsigned int vol = getSome<unsigned int>("Enter file's volume: ");
     return vol;
 }
 
-std::map<string, string> &Menu::getWay(){
+map<string, string> &Menu::getWay(){
     cout <<"Enter the way to file (example /dir1/dir2/dir3):" <<endl;
-    string way = getSome<string>("/");
+    string way;
+    bool fl;
+    do{
+        cout << "/";
+        getline(cin, way);
+        fl = false;
+        if (cin.fail()){
+            cin.clear();
+            cin.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
+            fl = true;
+        }
+    }while(fl);
     string dir;
     map<string, string>::iterator tmp;
     map<string, File*>::iterator file;
@@ -102,6 +117,7 @@ std::map<string, string> &Menu::getWay(){
         pos = way.find("/");
         if (pos == string::npos){
             dir = way;
+            way.clear();
         }else{
             dir = way.substr(0, pos);
             way.erase(0, pos + 1);
@@ -142,14 +158,14 @@ void Menu::nextID(std::string &ID){
 }
 
 void Menu::defragment(){ // !!!!!!!!!!!!!!!!!!!!!!!!Write MEEEEEEEEEEEEEEEEEEEEEE!!!!!!!!!!!!!!!!!!!!!!!!!
-    _id = "aaaaaaaaaaaaaaaaaaaaaaaa";
-    map<string,File*>::iterator tmp;
+    _ID = "aaaaaaaaaaaaaaaaaaaaaaaa";
+    map<string, File*>::iterator tmp;
     for (tmp = _table.begin(); tmp != _table.end(); tmp++){
 
     }
 }
 
-bool Menu::findName(const string &name, std::map<string,string> &table){
+bool Menu::findName(const string &name, map<string,string> &table){
     map<string,string>::iterator tmp = table.find(name);
     if (tmp == table.end()){
         return false;
@@ -157,22 +173,50 @@ bool Menu::findName(const string &name, std::map<string,string> &table){
     return true;
 }
 
+void Menu::delDir(string id){
+    map<string, string> &dir = dynamic_cast<Catalog *>(_table.find(id)->second)->getDir();
+    map<string,string>::iterator tmp = dir.begin();
+    while(tmp != dir.end()){
+        if (_table.find(tmp->second)->second->getType() == TYPE::CATALOG){
+            delDir(tmp->second);
+        }
+        delete _table.find(tmp->second)->second;
+        _table.erase(tmp->second);
+        tmp++;
+    }
+}
+
+unsigned int Menu::getDirVol(string id){
+    map<string, string> &dir = dynamic_cast<Catalog *>(_table.find(id)->second)->getDir();
+    map<string,string>::iterator tmp = dir.begin();
+    unsigned int vol = 0;
+    while(tmp != dir.end()){
+        if (_table.find(tmp->second)->second->getType() == TYPE::CATALOG){
+            vol += getDirVol(tmp->second);
+        }else{
+            vol += _table.find(tmp->second)->second->getvol();
+        }
+        tmp++;
+    }
+
+    return vol;
+}
 
 string Menu::generateID(){
-    if (_id.empty()){
+    if (_ID.empty()){
         defragment();
-        if (_id.empty()){
+        if (_ID.empty()){
             throw std::overflow_error("All IDs already used");
         }
     }
-    string ID = _id;
-    nextID(_id);
+    string ID = _ID;
+    nextID(_ID);
     return ID;
 }
 
-void Menu::addFile(){ // !!!!!!!!!!!!!
-    TYPE type = getType();
-    string name = getName();
+void Menu::addFile(){
+    TYPE type = setType();
+    string name = setName();
 
     if (type == TYPE::BYTE || type == TYPE::BLOCK){
         if (findName(name, _root)){
@@ -180,7 +224,7 @@ void Menu::addFile(){ // !!!!!!!!!!!!!
             cout <<EXISTS<<endl;
         }else{
             string id;
-            unsigned int vol = getVol();
+            unsigned int vol = setVol();
 
             try {
                 id = generateID();
@@ -219,7 +263,7 @@ void Menu::addFile(){ // !!!!!!!!!!!!!
                     cout <<e.what()<<endl;
                 }
             }else{
-                unsigned int vol = getVol();
+                unsigned int vol = setVol();
 
                 try {
                     id = generateID();
@@ -237,11 +281,14 @@ void Menu::addFile(){ // !!!!!!!!!!!!!
                     cout <<e.what()<<endl;
                 }
             }
-        } catch (invalid_argument) { //permission denied, no such directory
+        } catch (invalid_argument) { //permission denied, no such directory/file
+            system("cls");
             cout << NOFILE<<endl;
         } catch (logic_error){
+            system("cls");
             cout <<NODIR <<endl;
         } catch (system_error){
+            system("cls");
             cout <<DENIED <<endl;
         }
     }
@@ -251,34 +298,117 @@ void Menu::addFile(){ // !!!!!!!!!!!!!
 }
 
 void Menu::chmod(){
-    int mod;
-    do{
-        cout <<"(1 - execution, 2 - write, 4 - read)"<<endl<<"Enter access rights: ";
-        mod = getSome<int>("Enter access rights: ");
-    }while(mod > 7 || mod < 0);
+    try {
+        map<string, string> &table = getWay();
+        string name = setName();
+        map<string, string>::iterator tmp;
+
+        tmp = table.find(name);
+        if (tmp == table.end()){
+            system("cls");
+            cout << NOFILE<<endl;
+        }else{
+            int mod;
+            do{
+                cout <<"(1 - execution, 2 - write, 4 - read)"<<endl;
+                mod = getSome<int>("Enter access rights: ");
+            }while(mod > 7 || mod < 0);
+
+            _table.find(tmp->second)->second->chmod(mod);
+        }
+    }  catch (invalid_argument) { //permission denied, no such directory/file
+        system("cls");
+        cout << NOFILE<<endl;
+    } catch (logic_error){
+        system("cls");
+        cout <<NODIR <<endl;
+    } catch (system_error){
+        system("cls");
+        cout <<DENIED <<endl;
+    }
+
     cout <<"Press any key to continue."<<endl;
     _getch();
 }
 
 void Menu::chvol(){
+    try {
+        map<string, string> &table = getWay();
+        string name = setName();
+        map<string, string>::iterator tmp;
+
+        tmp = table.find(name);
+        if (tmp == table.end()){
+            system("cls");
+            cout << NOFILE<<endl;
+        }else{
+            unsigned int vol = setVol();
+
+            try {
+                _table.find(tmp->second)->second->chvol(vol);
+            } catch (system_error) {
+                system("cls");
+                cout <<"Directory's volume depends of files in it."<<endl<<DENIED <<endl;
+            }
+        }
+    }  catch (invalid_argument) { //permission denied, no such directory/file
+        system("cls");
+        cout << NOFILE<<endl;
+    } catch (logic_error){
+        system("cls");
+        cout <<NODIR <<endl;
+    } catch (system_error){
+        system("cls");
+        cout <<DENIED <<endl;
+    }
+
     cout <<"Press any key to continue."<<endl;
     _getch();
 }
 
 void Menu::delFile(){
+    try {
+        map<string, string> &table = getWay();
+        string name = setName();
+        map<string, string>::iterator tmp;
+
+        tmp = table.find(name);
+        if (tmp == table.end()){
+            system("cls");
+            cout << NOFILE<<endl;
+        }else{
+            if (_table.find(tmp->second)->second->getType() == TYPE::CATALOG){
+                delDir(tmp->second);
+            }
+            delete _table.find(tmp->second)->second;
+            _table.erase(tmp->second);
+            table.erase(name);
+            cout<<"File deleted successfully."<<endl;
+        }
+    }  catch (invalid_argument) { //permission denied, no such directory/file
+        system("cls");
+        cout << NOFILE<<endl;
+    } catch (logic_error){
+        system("cls");
+        cout <<NODIR <<endl;
+    } catch (system_error){
+        system("cls");
+        cout <<DENIED <<endl;
+    }
+
     cout <<"Press any key to continue."<<endl;
     _getch();
 }
 
-void Menu::viewInfo(){ // !!!!!!!!!!!!!!!!!!!TIMEEEEEE!!!!!!!!!!!!!!!!!!!!!!!!
-    cout <<"Name\t\t\t\t\t\tID\t\t\t\t\t\t\tAccess\tType\t\tVolume\t\t\t\tTime"<<endl;
+void Menu::viewInfo(){
+    cout <<"\t\t    Name\t\t       ID Access    Type      Volume  Time"<<endl;
     map<string,File*>::iterator tmp;
     for (tmp = _table.begin(); tmp != _table.end(); tmp++){
-        printf("%*s\t", 24, (tmp->second->getName()).c_str());
-        printf("%*s\t", 24, (tmp->first).c_str());
-        cout << tmp->second->getID()<<"\t";
+        File* file = tmp->second;
+        printf("%*s ", 24, (file->getName()).c_str());
+        cout << file->getID()<<" ";
 
-        int mod = tmp->second->getmod();
+        int mod = file->getmod();
         if (mod >= 4){
             mod -= 4;
             cout <<"-r";
@@ -289,27 +419,33 @@ void Menu::viewInfo(){ // !!!!!!!!!!!!!!!!!!!TIMEEEEEE!!!!!!!!!!!!!!!!!!!!!!!!
         }else cout <<"-";
         if (mod == 1){
             cout <<"x\t";
-        }else cout <<"-\t";
+        }else cout <<"-   ";
 
-        TYPE type = tmp->second->getType();
+        TYPE type = file->getType();
         if (type == TYPE::BYTE){
-            cout <<"BYTE\t\t";
+            cout <<"BYTE     ";
         }else if (type == TYPE::BLOCK){
-            cout <<"BLOCK\t\t";
+            cout <<"BLOCK    ";
         }else if (type == TYPE::COMMON){
-            cout <<"COMMON\t\t";
+            cout <<"COMMON   ";
         }else{
-            cout <<"CATALOG\t\t";
+            cout <<"CATALOG  ";
         }
 
-        printf("%*d\t", 15, tmp->second->getvol());
+        if (type == TYPE::CATALOG){
+            printf("%*d  ", 10, getDirVol(tmp->first));
+        }else{
+            printf("%*d  ", 10, file->getvol());
+        }
         if (type == TYPE::COMMON){
-            //cout<<TIME;
+            string time = string(asctime(localtime(dynamic_cast<CommonFile*>(file)->getTime())));
+            time.erase(time.size() - 1);
+            cout<<time;
         }
         cout <<endl;
     }
 
-    cout <<"Press any key to continue."<<endl;
+    cout <<endl<<"Press any key to continue."<<endl;
     _getch();
 }
 

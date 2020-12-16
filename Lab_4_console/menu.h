@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <limits>
 
 #include "typefiles.h"
 
@@ -14,13 +15,17 @@ using std::string;
 template <class T>
 T getSome(const string &str){
     bool fl = false;
-    T a;
+    T a;   
     do{
         cout <<str;
-        try {
-            cin >>a;
-        } catch (...) {
+        cin >>a;
+        fl = false;
+        if (cin.fail()){
+            cin.clear();
+            cin.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
             fl = true;
+        }else{
+            cin.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
         }
     }while(fl);
     return a;
@@ -31,21 +36,23 @@ class Menu
 private:
    std::map<string, File*> _table;
    std::map<string, string> _root;
-   static std::string _id;
+   static std::string _ID;
 
    void (Menu::*functionMass[6])() = {&Menu::addFile, &Menu::chmod,
            &Menu::chvol, &Menu::delFile, &Menu::viewInfo, &Menu::exit};
 
-   string getName();
-   TYPE getType();
-   unsigned int getVol();
-   int getNum();
+   string setName();
+   TYPE setType();
+   unsigned int setVol();
    std::map<string, string> &getWay();
 
    string generateID();
    void nextID(std::string &ID);
    void defragment();
    bool findName(const string &name, std::map<string,string> &table);
+
+   void delDir(string id);
+   unsigned int getDirVol(string id);
 
 public:
    Menu();
@@ -59,7 +66,5 @@ public:
 
    void exit();
 };
-
-string Menu::_id = "aaaaaaaaaaaaaaaaaaaaaaaa"; //a - 24
 
 #endif // MENU_H
