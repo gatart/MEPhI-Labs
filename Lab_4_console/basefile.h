@@ -23,7 +23,7 @@ private:
     unsigned int _volume;
     const std::string _name;
     const TYPE _fileType;
-    const std::string _id;
+    std::string _id;
 
 public:
     File(const TYPE fileType, const std::string &ID, unsigned int volume, const std::string name)
@@ -40,6 +40,7 @@ public:
     int getmod();
     unsigned int getvol();
     void setAdress(File* adress);
+    void putID(const std::string &ID);
 };
 
 #endif // FILE_H

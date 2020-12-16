@@ -167,10 +167,12 @@ void Menu::defragDir(string id, map<string, File*> &table){ // !!!!!!!!!!!!!!!!!
         table.insert(make_pair(_ID, _table.find(dir->second)->second));
         if (_table.find(dir->second)->second->getType() == TYPE::CATALOG){
             string newID = _ID;
+            _table.find(dir->second)->second->putID(_ID);
             nextID(_ID);
             defragDir(dir->second, table);
             dir->second = newID;
         }else{
+            _table.find(dir->second)->second->putID(_ID);
             dir->second = _ID;
             nextID(_ID);
         }
@@ -187,13 +189,13 @@ void Menu::defragment(){ // !!!!!!!!!!!!!!!!!!!!!!!!Write MEEEEEEEEEEEEEEEEEEEEE
         table->insert(make_pair(_ID, _table.find(dir->second)->second));
         cout <<_ID<<endl;
         if (_table.find(dir->second)->second->getType() == TYPE::CATALOG){
-
-            cout<< "Dir"<<endl;
             string newID = _ID;
+            _table.find(dir->second)->second->putID(_ID);
             nextID(_ID);
             defragDir(dir->second, *table);
             dir->second = newID;
         }else{
+            _table.find(dir->second)->second->putID(_ID);
             dir->second = _ID;
             nextID(_ID);
         }

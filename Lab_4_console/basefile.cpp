@@ -53,5 +53,9 @@ void File::setAdress(File* adress){
     _adress = adress;
 }
 
+void File::putID(const std::string &ID){
+    _id = ID;
+}
+
 File::~File(){
 }
