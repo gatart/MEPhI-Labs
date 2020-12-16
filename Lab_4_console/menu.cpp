@@ -33,12 +33,13 @@ void Menu::mainMenu(){
                  <<"[2] Change the volume of file"<<endl
                  <<"[3] Delete file"<<endl
                  <<"[4] Show information about files"<<endl
-                 <<"[5] Exit"<<endl;
+                 <<"[5] Defragmentation"<<endl
+                 <<"[6] Exit"<<endl;
             ret = getSome<int>(">>>");
-        }while(ret < 0 || ret > 5);
+        }while(ret < 0 || ret > 6);
         system("cls");
         (this->*functionMass[ret])();
-    }while (ret != 5);
+    }while (ret != 6);
 }
 
 string Menu::setName(){
@@ -157,12 +158,53 @@ void Menu::nextID(std::string &ID){
     }
 }
 
+void Menu::defragDir(string id, map<string, File*> &table){ // !!!!!!!!!!!!!!!!!WRITE MEEEEEEEEEEEEEEEEEEe!!!!!!!!!!!!!!!!!!!!!!!
+    map<string, string> &Dir = dynamic_cast<Catalog*>(_table.find(id)->second)->getDir();
+    map<string, string>::iterator dir = Dir.begin();
+
+    cout <<"dirfrag"<<endl;
+    while(dir != Dir.end()){
+        table.insert(make_pair(_ID, _table.find(dir->second)->second));
+        if (_table.find(dir->second)->second->getType() == TYPE::CATALOG){
+            string newID = _ID;
+            nextID(_ID);
+            defragDir(dir->second, table);
+            dir->second = newID;
+        }else{
+            dir->second = _ID;
+            nextID(_ID);
+        }
+        dir++;
+    }
+}
+
 void Menu::defragment(){ // !!!!!!!!!!!!!!!!!!!!!!!!Write MEEEEEEEEEEEEEEEEEEEEEE!!!!!!!!!!!!!!!!!!!!!!!!!
     _ID = "aaaaaaaaaaaaaaaaaaaaaaaa";
-    map<string, File*>::iterator tmp;
-    for (tmp = _table.begin(); tmp != _table.end(); tmp++){
+    map<string, File*> *table = new map<string, File*>;
+    map<string, string>::iterator dir = _root.begin();
 
+    while(dir != _root.end()){
+        table->insert(make_pair(_ID, _table.find(dir->second)->second));
+        cout <<_ID<<endl;
+        if (_table.find(dir->second)->second->getType() == TYPE::CATALOG){
+
+            cout<< "Dir"<<endl;
+            string newID = _ID;
+            nextID(_ID);
+            defragDir(dir->second, *table);
+            dir->second = newID;
+        }else{
+            dir->second = _ID;
+            nextID(_ID);
+        }
+        dir++;
     }
+
+    _table.clear();
+    _table = *table;
+
+    cout <<endl<<"Press any key to continue."<<endl;
+    _getch();
 }
 
 bool Menu::findName(const string &name, map<string,string> &table){
@@ -451,4 +493,11 @@ void Menu::viewInfo(){
 
 void Menu::exit(){
     cout <<"The System has finished its work."<<endl<<"Press any key to quit."<<endl;
+}
+
+Menu::~Menu(){
+    map<string, File*>::iterator tmp = _table.begin();
+    while(tmp != _table.end()){
+        delete tmp->second;
+    }
 }

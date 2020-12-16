@@ -38,8 +38,8 @@ private:
    std::map<string, string> _root;
    static std::string _ID;
 
-   void (Menu::*functionMass[6])() = {&Menu::addFile, &Menu::chmod,
-           &Menu::chvol, &Menu::delFile, &Menu::viewInfo, &Menu::exit};
+   void (Menu::*functionMass[7])() = {&Menu::addFile, &Menu::chmod,
+           &Menu::chvol, &Menu::delFile, &Menu::viewInfo, &Menu::defragment, &Menu::exit};
 
    string setName();
    TYPE setType();
@@ -53,6 +53,7 @@ private:
 
    void delDir(string id);
    unsigned int getDirVol(string id);
+   void defragDir(string id, std::map<string, File*> &table);
 
 public:
    Menu();
@@ -65,6 +66,7 @@ public:
    void viewInfo();
 
    void exit();
+   ~Menu();
 };
 
 #endif // MENU_H
