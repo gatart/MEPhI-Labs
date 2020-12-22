@@ -34,7 +34,7 @@ T getSome(const string &str){
 class Menu
 {
 private:
-   std::map<string, File*> _table;
+   std::map<string, File*> *_table;
    std::map<string, string> _root;
    static std::string _ID;
 

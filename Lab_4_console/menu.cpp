@@ -20,6 +20,7 @@ string Menu::_ID = "aaaaaaaaaaaaaaaaaaaaaaaa"; //a - 24
 
 
 Menu::Menu(){
+    _table = new map<string, File*>;
 }
 
 void Menu::mainMenu(){
@@ -128,7 +129,7 @@ map<string, string> &Menu::getWay(){
         if (tmp == table->end()){
             throw std::invalid_argument("No such file");
         }
-        file = _table.find(tmp->second);
+        file = _table->find(tmp->second);
         if (file->second->getType() != TYPE::CATALOG){
             throw logic_error("Not dir");
         }
@@ -159,20 +160,20 @@ void Menu::nextID(std::string &ID){
 }
 
 void Menu::defragDir(string id, map<string, File*> &table){ // !!!!!!!!!!!!!!!!!WRITE MEEEEEEEEEEEEEEEEEEe!!!!!!!!!!!!!!!!!!!!!!!
-    map<string, string> &Dir = dynamic_cast<Catalog*>(_table.find(id)->second)->getDir();
+    map<string, string> &Dir = dynamic_cast<Catalog*>(_table->find(id)->second)->getDir();
     map<string, string>::iterator dir = Dir.begin();
 
     cout <<"dirfrag"<<endl;
     while(dir != Dir.end()){
-        table.insert(make_pair(_ID, _table.find(dir->second)->second));
-        if (_table.find(dir->second)->second->getType() == TYPE::CATALOG){
+        table.insert(make_pair(_ID, _table->find(dir->second)->second));
+        if (_table->find(dir->second)->second->getType() == TYPE::CATALOG){
             string newID = _ID;
-            _table.find(dir->second)->second->putID(_ID);
+            _table->find(dir->second)->second->putID(_ID);
             nextID(_ID);
             defragDir(dir->second, table);
             dir->second = newID;
         }else{
-            _table.find(dir->second)->second->putID(_ID);
+            _table->find(dir->second)->second->putID(_ID);
             dir->second = _ID;
             nextID(_ID);
         }
@@ -186,24 +187,24 @@ void Menu::defragment(){ // !!!!!!!!!!!!!!!!!!!!!!!!Write MEEEEEEEEEEEEEEEEEEEEE
     map<string, string>::iterator dir = _root.begin();
 
     while(dir != _root.end()){
-        table->insert(make_pair(_ID, _table.find(dir->second)->second));
+        table->insert(make_pair(_ID, _table->find(dir->second)->second));
         cout <<_ID<<endl;
-        if (_table.find(dir->second)->second->getType() == TYPE::CATALOG){
+        if (_table->find(dir->second)->second->getType() == TYPE::CATALOG){
             string newID = _ID;
-            _table.find(dir->second)->second->putID(_ID);
+            _table->find(dir->second)->second->putID(_ID);
             nextID(_ID);
             defragDir(dir->second, *table);
             dir->second = newID;
         }else{
-            _table.find(dir->second)->second->putID(_ID);
+            _table->find(dir->second)->second->putID(_ID);
             dir->second = _ID;
             nextID(_ID);
         }
         dir++;
     }
 
-    _table.clear();
-    _table = *table;
+    delete _table;
+    _table = table;
 
     cout <<endl<<"Press any key to continue."<<endl;
     _getch();
@@ -218,27 +219,27 @@ bool Menu::findName(const string &name, map<string,string> &table){
 }
 
 void Menu::delDir(string id){
-    map<string, string> &dir = dynamic_cast<Catalog *>(_table.find(id)->second)->getDir();
+    map<string, string> &dir = dynamic_cast<Catalog *>(_table->find(id)->second)->getDir();
     map<string,string>::iterator tmp = dir.begin();
     while(tmp != dir.end()){
-        if (_table.find(tmp->second)->second->getType() == TYPE::CATALOG){
+        if (_table->find(tmp->second)->second->getType() == TYPE::CATALOG){
             delDir(tmp->second);
         }
-        delete _table.find(tmp->second)->second;
-        _table.erase(tmp->second);
+        delete _table->find(tmp->second)->second;
+        _table->erase(tmp->second);
         tmp++;
     }
 }
 
 unsigned int Menu::getDirVol(string id){
-    map<string, string> &dir = dynamic_cast<Catalog *>(_table.find(id)->second)->getDir();
+    map<string, string> &dir = dynamic_cast<Catalog *>(_table->find(id)->second)->getDir();
     map<string,string>::iterator tmp = dir.begin();
     unsigned int vol = 0;
     while(tmp != dir.end()){
-        if (_table.find(tmp->second)->second->getType() == TYPE::CATALOG){
+        if (_table->find(tmp->second)->second->getType() == TYPE::CATALOG){
             vol += getDirVol(tmp->second);
         }else{
-            vol += _table.find(tmp->second)->second->getvol();
+            vol += _table->find(tmp->second)->second->getvol();
         }
         tmp++;
     }
@@ -275,7 +276,7 @@ void Menu::addFile(){
                 _root.insert(make_pair(name, id));
                 File *specfile = new File(type, id, vol, name);
                 try {
-                    _table.insert(make_pair(id, specfile));
+                    _table->insert(make_pair(id, specfile));
                     cout <<"File added successfully."<<endl;
                 } catch (...) {
                     delete specfile;
@@ -296,7 +297,7 @@ void Menu::addFile(){
                     table.insert(make_pair(name, id));
                     File *dir = new Catalog(type, id, name);
                     try {
-                        _table.insert(make_pair(id, dir));
+                        _table->insert(make_pair(id, dir));
                         cout <<"File added successfully."<<endl;
                     } catch (...) {
                         delete dir;
@@ -314,7 +315,7 @@ void Menu::addFile(){
                     table.insert(make_pair(name, id));
                     File *common = new CommonFile(type, id, vol, name);
                     try {
-                        _table.insert(make_pair(id, common));
+                        _table->insert(make_pair(id, common));
                         cout <<"File added successfully."<<endl;
                     } catch (...) {
                         delete common;
@@ -358,7 +359,7 @@ void Menu::chmod(){
                 mod = getSome<int>("Enter access rights: ");
             }while(mod > 7 || mod < 0);
 
-            _table.find(tmp->second)->second->chmod(mod);
+            _table->find(tmp->second)->second->chmod(mod);
         }
     }  catch (invalid_argument) { //permission denied, no such directory/file
         system("cls");
@@ -389,7 +390,7 @@ void Menu::chvol(){
             unsigned int vol = setVol();
 
             try {
-                _table.find(tmp->second)->second->chvol(vol);
+                _table->find(tmp->second)->second->chvol(vol);
             } catch (system_error) {
                 system("cls");
                 cout <<"Directory's volume depends of files in it."<<endl<<DENIED <<endl;
@@ -421,11 +422,11 @@ void Menu::delFile(){
             system("cls");
             cout << NOFILE<<endl;
         }else{
-            if (_table.find(tmp->second)->second->getType() == TYPE::CATALOG){
+            if (_table->find(tmp->second)->second->getType() == TYPE::CATALOG){
                 delDir(tmp->second);
             }
-            delete _table.find(tmp->second)->second;
-            _table.erase(tmp->second);
+            delete _table->find(tmp->second)->second;
+            _table->erase(tmp->second);
             table.erase(name);
             cout<<"File deleted successfully."<<endl;
         }
@@ -447,7 +448,7 @@ void Menu::delFile(){
 void Menu::viewInfo(){
     cout <<"\t\t    Name\t\t       ID Access    Type      Volume  Time"<<endl;
     map<string,File*>::iterator tmp;
-    for (tmp = _table.begin(); tmp != _table.end(); tmp++){
+    for (tmp = _table->begin(); tmp != _table->end(); tmp++){
         File* file = tmp->second;
         printf("%*s ", 24, (file->getName()).c_str());
         cout << file->getID()<<" ";
@@ -498,8 +499,12 @@ void Menu::exit(){
 }
 
 Menu::~Menu(){
-    map<string, File*>::iterator tmp = _table.begin();
-    while(tmp != _table.end()){
+    map<string, File*>::iterator tmp = _table->begin();
+    while(tmp != _table->end()){
+        cout <<"begin";
         delete tmp->second;
+        cout <<"end";
     }
+
+    delete _table;
 }
