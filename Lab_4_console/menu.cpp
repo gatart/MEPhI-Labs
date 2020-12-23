@@ -204,7 +204,7 @@ void Menu::defragment(){ // !!!!!!!!!!!!!!!!!!!!!!!!Write MEEEEEEEEEEEEEEEEEEEEE
     }
 
     delete _table;
-    _table = table;
+    _table = std::move(table);
 
     cout <<endl<<"Press any key to continue."<<endl;
     _getch();

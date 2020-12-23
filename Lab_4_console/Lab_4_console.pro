@@ -7,8 +7,7 @@ SOURCES += \
         main.cpp \
     menu.cpp \
     basefile.cpp \
-    typefiles.cpp \
-    template.cpp
+    typefiles.cpp
 
 HEADERS += \
     menu.h \
