@@ -13,34 +13,7 @@ TEST(TemplateConstructors, Map){
     ASSERT_EQ(test.begin(), test.end());
 }
 
-TEST(TemplatePrivate, Insert){
-    TemplateMap<string,int> test;
-    test.insert("test", 100);
-    ASSERT_EQ(test.size(), 1);
-    TemplateMap<string, int>::iterator tmp = test.begin();
-    ASSERT_EQ(tmp->first, "test");
-    ASSERT_EQ(tmp->second, 100);
-    ASSERT_THROW(test.insert("test", 100), logic_error);
-}
 
-TEST(TemplatePrivate, Find){
-    TemplateMap<string,int> test;
-    ASSERT_EQ(test.find("test"), test.end());
-    test.insert("test", 100);
-    ASSERT_EQ(test.find("test"), test.begin());
-}
-
-TEST(TemplatePrivate, Clear){
-    TemplateMap<string,int> test;
-    test.insert("test1", 100);
-    test.insert("test2", 100);
-    test.insert("test3", 100);
-    test.clear();
-    ASSERT_EQ(test.size(), 0);
-    ASSERT_EQ(test.find("test1"), test.end());
-    ASSERT_EQ(test.find("test2"), test.end());
-    ASSERT_EQ(test.find("test3"), test.end());
-}
 
 TEST(TemplatePublic, Begin){
     TemplateMap<string,int> test;
@@ -63,6 +36,28 @@ TEST(TemplatePublic, Size){
     ASSERT_EQ(test.size(), 4);
     test.clear();
     ASSERT_EQ(test.size(), 0);
+}
+
+TEST(TemplatePublic, Insert){
+    TemplateMap<string,int> test;
+    test.insert("test", 100);
+    ASSERT_EQ(test.size(), 1);
+    TemplateMap<string, int>::iterator tmp = test.begin();
+    ASSERT_EQ(tmp->first, "test");
+    ASSERT_EQ(tmp->second, 100);
+    ASSERT_THROW(test.insert("test", 100), logic_error);
+    test.insert("test2", 2);
+    test.insert("test3", 3);
+    tmp = test.begin();
+    ASSERT_EQ(tmp->first, "test");
+    ASSERT_EQ(tmp->second, 100);
+    ++tmp;
+    ASSERT_EQ(tmp->first, "test2");
+    ASSERT_EQ(tmp->second, 2);
+    ++tmp;
+    ASSERT_EQ(tmp->first, "test3");
+    ASSERT_EQ(tmp->second, 3);
+
 }
 
 TEST(TemplatePublic, Find){
@@ -102,6 +97,8 @@ TEST(TemplatePublic, Erase){
     ASSERT_EQ(test.find("test3"), test.end());
 
 }
+
+
 
 TEST(TemplateIterator, CopyOperator){
     TemplateMap<string,int> test;

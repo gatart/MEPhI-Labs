@@ -1,262 +1,216 @@
 #ifndef TEMPLATE_H
 #define TEMPLATE_H
 #include <iostream>
-#include <memory>
-#include <map>
+#include <vector>
+#include <string>
 
 using std::iterator;
 using std::logic_error;
-
+using std::pair;
 
 template <class Key, class T>
 class TemplateMap {
 private:
-    class Node {
-    public:
-        std::pair<Key, T> data;
-        Node* left;
-        Node* right;
-        Node* parent;
-    };
-    Node* root;
-    size_t size_;
+    std::vector<pair<Key, T>> _data;
 
-    Node* insert(Key key, T value, Node*& leaf, Node* parent);
-    Node* find(Key key, Node* leaf);
-    Node* clear(Node* leaf);
-    bool removeLeaf(Node*& leaf, Key key);
 public:
     class iterator {
     private:
-        Node* node;
-        Node* root;
+        // typename std::vector<pair<Key, T>>::iterator _point; // для наглой реализации
+        size_t _pos; // для обычной реализации
+        std::vector<pair<Key, T>>* _vect;
+
     public:
-        iterator();
-        iterator& operator=(const iterator&);
+        iterator(); //v
+        iterator& operator=(const iterator&); //v
 
-        iterator& operator++();
-        std::pair<Key, T>& operator*() const;
-        std::pair<Key, T>* operator->() const;
+        iterator& operator++(); //v
+        std::pair<Key, T>& operator*() const; //v
+        std::pair<Key, T>* operator->() const; //v
 
-        bool operator==(iterator other) const;
-        bool operator!=(iterator other) const;
+        bool operator==(iterator other) const; //v
+        bool operator!=(iterator other) const; //v
 
         friend class TemplateMap;
     };
 
-
-    TemplateMap();
-    ~TemplateMap();
-    iterator begin();
-    iterator end();
-    size_t size();
+    TemplateMap(); //v
+    ~TemplateMap(); //v
+    iterator begin(); //v
+    iterator end(); //v
+    size_t size(); //v
     iterator find(Key key);
-    void clear();
+    void clear(); //v
     void insert(Key key, T value);
-    size_t erase(Key key);
+    size_t erase(Key key); //v
 };
 
-
-template <class Key, class T>
-typename TemplateMap<Key, T>::Node* TemplateMap<Key, T>::insert(Key key, T value, Node*& leaf, Node* parent) {
-
-    if (!leaf)
-    {
-        leaf = new Node;
-        leaf->left = leaf->right = nullptr;
-        leaf->data.second = value;
-        leaf->data.first = key;
-        leaf->parent = parent;
-        size_++;
-        return leaf;
-    }
-    else if (key < leaf->data.first)
-    {
-        return insert(key, value, leaf->left, leaf);
-    }
-    else if (key > leaf->data.first)
-    {
-        return insert(key, value, leaf->right, leaf);
-    }
-    else
-        return leaf;
-}
-
-template <class Key, class T>
-typename TemplateMap<Key, T>::Node* TemplateMap<Key, T>::find(Key key, Node* leaf) {
-
-    if (!leaf || leaf->data.first == key)
-        return leaf;
-    if (key < leaf->data.first)
-        return find(key, leaf->left);
-    else
-        return find(key, leaf->right);
-}
-
-template <class Key, class T>
-typename TemplateMap<Key, T>::Node* TemplateMap<Key, T>::clear(Node* leaf) {
-
-    if (leaf)
-    {
-        leaf->left = clear(leaf->left);
-        leaf->right = clear(leaf->right);
-        delete leaf;
-    }
-    return nullptr;
-}
-
-template <class Key, class T>
-bool TemplateMap<Key, T>::removeLeaf(Node*& leaf, Key key) {
-
-    if (!leaf)
-        return false;
-
-    if (key < leaf->data.first)
-        return removeLeaf(leaf->left, key);
-    else if (key > leaf->data.first)
-        return removeLeaf(leaf->right, key);
-    else if (leaf->left && leaf->right) {
-        Node* tmp = leaf->right;
-        while (tmp && tmp->left)
-            tmp = tmp->left;
-        leaf->data = tmp->data;
-        removeLeaf(leaf->right, tmp->data.first);
-        return true;
-    }
-    else {
-        Node* toDel = leaf;
-        if (!leaf->left)
-            leaf = leaf->right;
-        else
-            leaf = leaf->left;
-        if (leaf)
-            leaf->parent = toDel->parent;
-        delete toDel;
-        return true;
-    }
-}
-
+//iterator
 
 template <class Key, class T>
 TemplateMap<Key, T>::iterator::iterator() {
-    node = nullptr;
-    root = nullptr;
+    // _point = nullptr; // наглая реализация
+    _vect = nullptr;
+    _pos = std::string::npos;
+
 }
 
 template <class Key, class T>
 typename TemplateMap<Key, T>::iterator& TemplateMap<Key, T>::iterator::operator=(const TemplateMap<Key, T>::iterator& other) {
-    node = other.node;
-    root = other.root;
+    _vect = other._vect;
+    _pos = other._pos;
     return *this;
 }
 
-template <class Key, class T>
-typename TemplateMap<Key, T>::iterator& TemplateMap<Key, T>::iterator::operator++() {
 
-    if (node->right) {
-        node = node->right;
-        while (node->left) {
-            node = node->left;
-        }
-    }
-    else {
-        Node* p = node->parent;
-        while (p && node == p->right) {
-            node = p;
-            p = p->parent;
-        }
-        node = p;
-    }
-    return *this;
-}
 
 template <class Key, class T>
 std::pair<Key, T>& TemplateMap<Key, T>::iterator::operator*() const {
-    return node->data;
+    // return *_point; // наглая реализация
+    return _vect->at(_pos);
 }
 
 template <class Key, class T>
 std::pair<Key, T>* TemplateMap<Key, T>::iterator::operator->() const {
-    return &(node->data);
+    // return &(*_point); // наглая реализация
+    return &(_vect->at(_pos));
 }
+
+
 
 template <class Key, class T>
 bool TemplateMap<Key, T>::iterator::operator==(iterator other) const {
-    return node == other.node;
+    return _pos == other._pos;
 }
 
 template <class Key, class T>
 bool TemplateMap<Key, T>::iterator::operator!=(iterator other) const {
-    return node != other.node;
+    return  _pos != other._pos;
 }
 
 
 template <class Key, class T>
+typename TemplateMap<Key, T>::iterator& TemplateMap<Key, T>::iterator::operator++() {
+
+    if (_pos == _vect->size() - 1) _pos = std::string::npos;
+    else _pos++;
+
+    return *this;
+}
+
+
+// public methods
+
+template <class Key, class T>
 TemplateMap<Key, T>::TemplateMap() {
-    size_ = 0;
-    root = nullptr;
 }
 
 template <class Key, class T>
 TemplateMap<Key, T>::~TemplateMap() {
-    root = clear(root);
-}
-
-template <class Key, class T>
-size_t TemplateMap<Key, T>::size() {
-    return size_;
+    _data.clear();
 }
 
 template <class Key, class T>
 typename TemplateMap<Key, T>::iterator TemplateMap<Key, T>::begin() {
 
+    if (_data.size() == 0) return end();
+
     iterator it;
-    it.root = it.node = root;
-    while (it.node && it.node->left) {
-        it.node = it.node->left;
-    }
+    // it._point = _data.begin(); // наглая реализация
+    it._vect = &_data;
+    it._pos = 0;
     return it;
 }
 
 template <class Key, class T>
 typename TemplateMap<Key, T>::iterator TemplateMap<Key, T>::end() {
-
     iterator it;
-    it.root = root;
-    it.node = nullptr;
+    // it._point = _data.end(); // наглая реализация
+    it._vect = &_data;
+    it._pos = std::string::npos;
     return it;
+}
+
+template <class Key, class T>
+size_t TemplateMap<Key, T>::size() {
+    return _data.size();
 }
 
 template <class Key, class T>
 typename TemplateMap<Key, T>::iterator TemplateMap<Key, T>::find(Key key) {
     iterator it;
-    it.node = find(key, root);
+    it._vect = &_data;
+    size_t end = _data.size();
+    if (end == 0){
+        it._pos = std::string::npos;
+        return it;
+    }
+    end -= 1;
+    size_t beg = 0;
+    size_t tmp;
+    Key id;
+    while(beg <= end){
+        tmp = beg + (end - beg) / 2; // for case then beg + end > max size_t
+        id = _data[tmp].first;
+        if (id == key){
+            it._pos = tmp;
+            break;
+        }
+        if (id < key){
+            beg = tmp + 1;
+        }else{
+            if (tmp == 0){
+                end = 0;
+                beg = 1;
+                break;
+            }
+            end = tmp - 1;
+        }
+    }
+    if (beg > end){
+        it._pos = std::string::npos;
+    }
+
     return it;
 }
 
 template <class Key, class T>
 void TemplateMap<Key, T>::clear() {
-    root = clear(root);
-    size_ = 0;
-}
-
-template <class Key, class T>
-size_t TemplateMap<Key, T>::erase(Key key) {
-    if (removeLeaf(root, key)) {
-        size_--;
-        return 1;
-    }
-    else
-        return 0;
+    _data.clear();
 }
 
 template  <class Key, class T>
 void TemplateMap<Key, T>::insert(Key key, T value){
+    if (_data.size() == 0){
+        _data.insert(_data.begin(), make_pair(key, value));
+        return;
+    }
+
     if(find(key) != end()){
         throw logic_error("Duplicate key");
     }
-    insert(key, value, root, root);
+    iterator it = begin();
+    while(it != end()){
+        if (it->first > key) break;
+        ++it;
+    }
+    if (it._pos == std::string::npos){
+        _data.emplace(_data.end(), make_pair(key, value));
+    }else{
+        _data.emplace(_data.begin() + it._pos, make_pair(key, value));
+    }
 }
 
+template <class Key, class T>
+size_t TemplateMap<Key, T>::erase(Key key) {
+    iterator it = find(key);
+    if (it == end()){
+        return 0;
+    }
 
-#endif // TEMPLATE_H
+    _data.erase(_data.begin() + it._pos);
+
+    return 1;
+}
+
+#endif
