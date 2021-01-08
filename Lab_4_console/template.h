@@ -8,48 +8,116 @@ using std::iterator;
 using std::logic_error;
 using std::pair;
 
+/*!
+    \brief Шаблонный контейнерный класс, для замены std::map.
+    \author Gatart
+    \version 1.0
+    \date Декабрь 2020 года
+    \warning Данный класс создан в учебных целях!
+
+    Данный контейнерный класс хранит в себе пары элементов <Ключ, Значение>, такие, что у каждой пары свой индивидуальный ключ.
+    Класс является шаблонным, что позволяет использовать его для различных типов данных.
+*/
+
 template <class Key, class T>
 class TemplateMap {
 private:
     std::vector<pair<Key, T>> _data;
 
 public:
-    class iterator {
+    class iterator {        ///< Итератор
     private:
-        // typename std::vector<pair<Key, T>>::iterator _point; // для наглой реализации
-        size_t _pos; // для обычной реализации
+        size_t _pos;
         std::vector<pair<Key, T>>* _vect;
 
     public:
-        iterator(); //v
-        iterator& operator=(const iterator&); //v
+        iterator();         ///< Конструктор итератора
+        /**
+         * @brief Копирующий оператор присваивания
+         */
+        iterator& operator=(const iterator&);
 
-        iterator& operator++(); //v
-        std::pair<Key, T>& operator*() const; //v
-        std::pair<Key, T>* operator->() const; //v
+        /**
+         * @brief Префиксный инкремент
+         * @return Возвращает итератор на следующий элемент
+         * @throw std::out_of_range В случае если применить к end()
+         */
+        iterator& operator++();
 
-        bool operator==(iterator other) const; //v
-        bool operator!=(iterator other) const; //v
+        /**
+         * @brief Перегруженный оператор взятия значения по адресу
+         * @throw std::out_of_range В случае если применить к end()
+         * @return Возвращает пару std::pair<Key, T> на которую указывает итератор
+         */
+        std::pair<Key, T>& operator*() const;
+        /**
+         * @brief operator ->
+         * @return Возвращает указатель на пару std::pair<Key, T> на которую указывает итератор
+         */
+        std::pair<Key, T>* operator->() const;
+
+        /**
+         * @brief operator ==
+         * @param other Итератор с которым сравнивают
+         * @return
+         */
+        bool operator==(iterator other) const;
+        /**
+         * @brief operator !=
+         * @param other Итератор с которым сравнивают
+         * @return
+         */
+        bool operator!=(iterator other) const;
 
         friend class TemplateMap;
     };
 
-    TemplateMap(); //v
-    ~TemplateMap(); //v
-    iterator begin(); //v
-    iterator end(); //v
-    size_t size(); //v
+    TemplateMap();      ///< Конструктор контейнерного класса
+    ~TemplateMap();     ///< Деструктор контейнерного класса
+    /**
+     * @brief  Итератор на начало контейнера
+     * @return Итератор на начало контейнера
+     */
+    iterator begin();
+    /**
+     * @brief Итератор на элемент после последнего в контейнере
+     * @return Итератор на элемент после последнего в контейнере
+     */
+    iterator end();
+    /**
+     * @brief Текущий размер контейнера
+     * @return Текущий размер контейнера
+     */
+    size_t size();
+    /**
+     * @brief Поиск элемента по ключу
+     * @param key Ключ по которому идёт поиск
+     * @return Итератор на найденный элемент. Если такового нет - end()
+     */
     iterator find(Key key);
-    void clear(); //v
+    /**
+     * @brief Освобождение контейнера
+     */
+    void clear();
+    /**
+     * @brief Добавление нового элемента в контейнер
+     * @param key Ключ к новому элементу
+     * @param value Значение нового элемента
+     * @throw std::logic_error В случае если элемент с таким ключём уже присутствует в контейнере
+     */
     void insert(Key key, T value);
-    size_t erase(Key key); //v
+    /**
+     * @brief Удаление элемента из контейнера
+     * @param key Ключ элемента, который удаляют
+     * @return Возвращает 0 в случае успеха, иначе - 1.
+     */
+    size_t erase(Key key);
 };
 
 //iterator
 
 template <class Key, class T>
 TemplateMap<Key, T>::iterator::iterator() {
-    // _point = nullptr; // наглая реализация
     _vect = nullptr;
     _pos = std::string::npos;
 
@@ -66,13 +134,11 @@ typename TemplateMap<Key, T>::iterator& TemplateMap<Key, T>::iterator::operator=
 
 template <class Key, class T>
 std::pair<Key, T>& TemplateMap<Key, T>::iterator::operator*() const {
-    // return *_point; // наглая реализация
     return _vect->at(_pos);
 }
 
 template <class Key, class T>
 std::pair<Key, T>* TemplateMap<Key, T>::iterator::operator->() const {
-    // return &(*_point); // наглая реализация
     return &(_vect->at(_pos));
 }
 
@@ -116,7 +182,6 @@ typename TemplateMap<Key, T>::iterator TemplateMap<Key, T>::begin() {
     if (_data.size() == 0) return end();
 
     iterator it;
-    // it._point = _data.begin(); // наглая реализация
     it._vect = &_data;
     it._pos = 0;
     return it;
@@ -125,7 +190,6 @@ typename TemplateMap<Key, T>::iterator TemplateMap<Key, T>::begin() {
 template <class Key, class T>
 typename TemplateMap<Key, T>::iterator TemplateMap<Key, T>::end() {
     iterator it;
-    // it._point = _data.end(); // наглая реализация
     it._vect = &_data;
     it._pos = std::string::npos;
     return it;
